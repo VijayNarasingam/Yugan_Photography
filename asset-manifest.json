@@ -1,0 +1,32 @@
+{
+  "files": {
+    "main.css": "/yugan_photography/static/css/main.591f18bd.css",
+    "main.js": "/yugan_photography/static/js/main.75dd87c9.js",
+    "static/js/453.c287ba80.chunk.js": "/yugan_photography/static/js/453.c287ba80.chunk.js",
+    "static/media/IMG_1179.jpg": "/yugan_photography/static/media/IMG_1179.90d7d5436c4b5a6965ae.jpg",
+    "static/media/IMG_0821.jpg": "/yugan_photography/static/media/IMG_0821.5e8a8e3a6b6e5449d192.jpg",
+    "static/media/wedding.jpg": "/yugan_photography/static/media/wedding.a9055c6ace84abdc8695.jpg",
+    "static/media/vivid-sitting-photographer1.gif": "/yugan_photography/static/media/vivid-sitting-photographer1.dd065129407774bbcbfd.gif",
+    "static/media/birthday.jpg": "/yugan_photography/static/media/birthday.984171fd465dd98fa32e.jpg",
+    "static/media/mountain.png": "/yugan_photography/static/media/mountain.11fb2a7ab3767a9ea987.png",
+    "static/media/mountain2.png": "/yugan_photography/static/media/mountain2.0b95310fcf8721fc270d.png",
+    "static/media/mountain1.png": "/yugan_photography/static/media/mountain1.f6e1013213b1449dc317.png",
+    "static/media/pencilart.png": "/yugan_photography/static/media/pencilart.4886205b049531a67d31.png",
+    "static/media/ajith.png": "/yugan_photography/static/media/ajith.5b3d932fd62a8bff8122.png",
+    "static/media/logo.png": "/yugan_photography/static/media/logo.b207b532dec6f7f8d434.png",
+    "static/media/festival.jpeg": "/yugan_photography/static/media/festival.b75b1e30992ab7304c24.jpeg",
+    "static/media/photography_drawing1 1.svg": "/yugan_photography/static/media/photography_drawing1 1.93ad514cfec5b240a2878ba261ce2025.svg",
+    "static/media/img-4.jpeg": "/yugan_photography/static/media/img-4.c8da82841ead039f8c12.jpeg",
+    "static/media/img-9.jpeg": "/yugan_photography/static/media/img-9.30958b63e052b95033b8.jpeg",
+    "static/media/img-7.jpeg": "/yugan_photography/static/media/img-7.3be9462eaffe571f4b38.jpeg",
+    "static/media/Close.svg": "/yugan_photography/static/media/Close.b1f65499a8176494d12d0771a265a331.svg",
+    "index.html": "/yugan_photography/index.html",
+    "main.591f18bd.css.map": "/yugan_photography/static/css/main.591f18bd.css.map",
+    "main.75dd87c9.js.map": "/yugan_photography/static/js/main.75dd87c9.js.map",
+    "453.c287ba80.chunk.js.map": "/yugan_photography/static/js/453.c287ba80.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.591f18bd.css",
+    "static/js/main.75dd87c9.js"
+  ]
+}
