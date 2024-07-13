@@ -1,0 +1,84 @@
+.scroll-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    overflow-x: scroll;
+/* Adjust as needed */
+}
+
+.box {
+    min-width: 150px; /* Adjust as needed */
+    height: 300px; /* Adjust as needed */
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.image-wrapper .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-wrapper:hover .overlay {
+    opacity: 1;
+}
+
+.image-wrapper.active img,
+.image-wrapper.hovered img {
+    transform: scale(1.2); /* Scale up the image */
+}
+
+.image-wrapper.active .overlay,
+.image-wrapper.hovered .overlay {
+    opacity: 1;
+}
+
+.image-wrapper .overlay a {
+    padding: 60% 20% ;
+    text-decoration: none;
+    color: white;
+    font-size: 1.5rem; /* Adjust as needed */
+}
+
+.image-wrapper .overlay a h1 {
+    border: 2px solid white;
+    text-decoration: none;
+    color: white;
+}
+
+.scroll-container button{
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    font-size: 5rem;
+    margin: -3% 3% 0 ;
+
+}
