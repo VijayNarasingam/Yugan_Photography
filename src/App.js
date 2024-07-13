@@ -12,7 +12,7 @@ function App() {
   return (
     <BrowserRouter>
     <Routes>
-      <Route path='/' element={<Home/>}/>
+      <Route path='/yugan_photography' element={<Home/>}/>
       <Route path='/gallery' element={<GalleryPage/>} />
       <Route path='/about' element={<AboutUs/>} />
     </Routes>
