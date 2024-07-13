@@ -13,8 +13,8 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route path='/Yugan_Photography' element={<Home/>}/>
-      <Route path='/gallery' element={<GalleryPage/>} />
-      <Route path='/about' element={<AboutUs/>} />
+      <Route path='/Gallery' element={<GalleryPage/>} />
+      <Route path='/About' element={<AboutUs/>} />
     </Routes>
     </BrowserRouter>
   )
