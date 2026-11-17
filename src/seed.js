@@ -223,6 +223,23 @@ export function buildSeedContent() {
         text: 'A wedding is not just a day — it is a lifetime of moments held still in a single frame.',
         attribution: 'Ajit Kumar',
       },
+      testimonials: [
+        {
+          quote: 'Ajit photographed our wedding like a member of the family — present, patient, and completely unobtrusive. When the photographs arrived, we saw moments we had missed entirely.',
+          names: 'Meera & Arjun',
+          context: 'Heritage wedding, Jaipur',
+        },
+        {
+          quote: 'The pictures feel like the day actually felt. Nothing staged, nothing rushed — just the light, the people, and the small details we wanted to remember.',
+          names: 'Sana & Rohan',
+          context: 'Destination wedding, Udaipur',
+        },
+        {
+          quote: 'He understood our families, the rituals, and the rhythm of the day. The album is the first thing we show anyone who visits.',
+          names: 'Priya & Karan',
+          context: 'Sangeet & ceremony, Jodhpur',
+        },
+      ],
       cta: {
         title: 'Planning your wedding?',
         body: 'Let\u2019s capture your ceremony, your celebrations, and the quiet moments in between.',

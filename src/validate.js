@@ -224,6 +224,9 @@ export function photoPayload(body, content, existing = null) {
 }
 
 export function homePayload(body, content) {
+  const testimonials = Array.isArray(body.testimonials) ? body.testimonials : [];
+  if (testimonials.length > 9) fail('testimonials', 'Keep testimonials to 9 items or fewer.');
+
   return {
     hero: {
       eyebrow: text(body.hero?.eyebrow, 'hero.eyebrow', 'Hero eyebrow', { max: 120 }),
@@ -242,6 +245,11 @@ export function homePayload(body, content) {
       text: text(body.quote?.text, 'quote.text', 'Pull quote', { required: true, max: 500, multiline: true }),
       attribution: text(body.quote?.attribution, 'quote.attribution', 'Quote attribution', { max: 120 }),
     },
+    testimonials: testimonials.map((item, index) => ({
+      quote: text(item?.quote, `testimonials.${index}.quote`, 'Testimonial quote', { required: true, max: 800, multiline: true }),
+      names: text(item?.names, `testimonials.${index}.names`, 'Couple names', { required: true, max: 120 }),
+      context: text(item?.context, `testimonials.${index}.context`, 'Testimonial context', { max: 160 }),
+    })),
     cta: {
       title: text(body.cta?.title, 'cta.title', 'Contact title', { required: true, max: 160 }),
       body: text(body.cta?.body, 'cta.body', 'Contact text', { required: true, max: 600, multiline: true }),

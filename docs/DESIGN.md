@@ -19,7 +19,7 @@
 | `--muted` | Secondary text | Muted brown-grey |
 | `--muted-2` | Fine print / captions | Lighter muted grey |
 | `--line` | Borders / dividers | Soft grey line |
-| `--accent` | Highlights, links, buttons | Clay terracotta (`#B4552D`) |
+| `--accent` | Highlights, links, buttons | Clay terracotta (`#8C4E2F`) |
 
 ## Typography
 
@@ -40,10 +40,14 @@ Fonts are self-hosted locally under `public/fonts/` rather than loaded from the 
 ## Components
 
 - **Hero:** Full-screen opening image with statement and CTA
+- **Introduction:** Serif statement, studio facts row (location, practice, coverage), and a tall portrait figure
+- **Featured intro:** Oversized serif heading paired with a short lead-in above the selected-work grid
 - **Project cards:** Staggered grid with category badges
-- **Recent frames:** Three-column masonry of photographs pulled from the visible project galleries, excluding featured covers
+- **Recent frames:** Three-column masonry of photographs pulled from the visible project galleries, excluding featured covers; each frame carries a small caption and source project
 - **Approach:** Numbered three-column principles drawn from About → Approach
-- **Services:** Editorial split layout listing coverage options from About → Highlights → Services
+- **Services:** Editorial split layout listing coverage options from About → Highlights → Services, with a closing note under the list
+- **Kind words:** Soft paper-2 band with a sticky left intro and a stacked testimonial list; quote marks, serif quotes, and uppercase couple/context captions
+- **Recognition:** Two-part layout with a serif heading and three bordered lists for publications, awards, and clients
 - **Work mosaic:** Dark, fixed-palette gallery grid with a large intro panel, overlay heading, and CTA; stays dark in both themes
 - **Lightbox:** Accessible keyboard-navigable image lightbox
 - **Contact form:** AJAX submission with success/error states, honeypot spam protection, rate limiting
@@ -52,15 +56,17 @@ Fonts are self-hosted locally under `public/fonts/` rather than loaded from the 
 ## Home Page Flow
 
 1. Hero
-2. Introduction
-3. Selected work
-4. Recent frames
-5. Approach
-6. Pull quote
-7. Services
-8. Contact CTA
+2. Introduction — 01 / 07
+3. Selected work — 02 / 07
+4. Recent frames — 03 / 07
+5. Approach — 04 / 07
+6. Pull quote (unnumbered dark band)
+7. Services — 05 / 07
+8. Kind words — 06 / 07
+9. Recognition — 07 / 07
+10. Contact CTA
 
-Recent frames, Approach, and Services reuse existing Gallery and About content, so no additional Admin fields are required.
+Recent frames, Approach, Services, and Recognition reuse existing Gallery and About content. Kind words is the only new home-specific collection, stored at `home.testimonials` and edited under Admin → Home page. Testimonials and Recognition hide gracefully when their data is empty.
 
 ## Font Licenses
 

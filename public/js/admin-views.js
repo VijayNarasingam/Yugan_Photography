@@ -247,7 +247,7 @@
     var home = A.state.content.home;
     return (
       '<div class="admin-page">' +
-        A.pageHead('Home page', 'The first impression.', 'The hero fills the screen. The introduction and featured projects follow.', '') +
+        A.pageHead('Home page', 'The first impression.', 'The hero, introduction, quote, and kind words. Approach, services, and recognition are edited on the About page.', '') +
         '<form class="admin-form" data-form="home">' +
           A.panel('Hero', 'Full-screen opening image and statement.',
             '<div class="form-grid">' +
@@ -271,6 +271,16 @@
               A.textField('Quote', 'quote.text', home.quote.text, { full: true, textarea: true, rows: 3 }) +
               A.textField('Attribution', 'quote.attribution', home.quote.attribution, { full: true }) +
             '</div>'
+          ) +
+          A.panel('Kind words', 'Client testimonials shown near the foot of the page.',
+            '<div class="repeater" data-repeater="testimonials">' +
+              A.repeaterRows('testimonials', home.testimonials || [], [
+                { name: 'quote', label: 'Quote', textarea: true },
+                { name: 'names', label: 'Names' },
+                { name: 'context', label: 'Context' },
+              ]) +
+            '</div>' +
+            '<button class="button button--outline button--small repeater__add" type="button" data-action="add-testimonial">' + A.icon('plus') + ' Add testimonial</button>'
           ) +
           A.panel('Contact panel', 'The split image and invitation near the foot of the page.',
             '<div class="form-grid">' +

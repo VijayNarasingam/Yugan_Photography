@@ -547,6 +547,14 @@
             { name: 'place', label: 'Place' },
           ]);
           return;
+        case 'add-testimonial':
+          event.preventDefault();
+          addRepeaterRow('testimonials', [
+            { name: 'quote', label: 'Quote', textarea: true },
+            { name: 'names', label: 'Names' },
+            { name: 'context', label: 'Context' },
+          ]);
+          return;
         case 'add-social':
           event.preventDefault();
           addRepeaterRow('socials', [

@@ -136,7 +136,7 @@
 
   if (!reduceMotion && 'IntersectionObserver' in window) {
     var revealTargets = document.querySelectorAll(
-      '.section-head, .intro__text, .intro__figure, .project-card, .quote__inner, .cta__media, .cta__body, .about-story__figure, .about-story__text, .approach__item, .experience__row, .highlights__col, .contact__form-wrap, .contact__aside, .next-project__inner, .gallery-item, .page-head__lead',
+      '.section-head, .intro__text, .intro__figure, .featured__intro, .project-card, .recent__lead, .quote__inner, .home-services__note, .kind-words__item, .recognition__col, .cta__media, .cta__body, .about-story__figure, .about-story__text, .approach__item, .experience__row, .highlights__col, .contact__form-wrap, .contact__aside, .next-project__inner, .gallery-item, .page-head__lead',
     );
 
     var observer = new IntersectionObserver(

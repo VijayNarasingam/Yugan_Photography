@@ -96,7 +96,7 @@ You **must** change the password after first login via Admin → Site settings �
 The admin is a single-page hash-routed app:
 
 - `#/overview` — Studio dashboard and stats
-- `#/home` — Hero, introduction, quote, contact panel
+- `#/home` — Hero, introduction, quote, kind words, contact panel
 - `#/about` — Biography, approach, experience, highlights
 - `#/contact` — Page wording, email/phone, project types
 - `#/work` — Projects: add, edit, reorder, delete
@@ -110,13 +110,15 @@ All changes save to the public site immediately.
 
 ## Home page content
 
-The home page runs: hero → introduction → selected work → recent frames → approach → quote → services → contact CTA.
+The home page runs: hero → introduction → selected work → recent frames → approach → quote → services → kind words → recognition → contact CTA.
 
-- **Recent frames** pulls six photographs from the visible project galleries, skipping featured project covers.
-- **Approach** reuses About → Approach.
-- **Services** reuses About → Highlights → Services.
+- **Introduction** includes a studio facts row built from Site settings and About → Experience.
+- **Selected work** and **Recent frames** use Projects and Galleries. Recent frames pulls six photographs from visible galleries, skipping featured project covers.
+- **Approach** and **Services** reuse About → Approach and About → Highlights → Services.
+- **Kind words** is managed at Admin → Home page → Kind words (up to 9 testimonials with quote, names, and context).
+- **Recognition** reuses About → Highlights → Publications, Awards, and Clients.
 
-No separate Admin fields are needed for these sections — edit the underlying About or Gallery content and the home page updates.
+The Kind words section hides when no testimonials are published; Recognition hides when all three lists are empty. Sections that reuse About or Gallery content update automatically when that content changes.
 
 ## Image credits
 
@@ -149,7 +151,7 @@ Uploaded images live in `public/uploads/`. For a complete backup, copy `data/` a
 
 ## Visual QA
 
-Visual QA was performed with Playwright headless Chromium at 1440px, 1024px, and 390px viewport widths. No horizontal overflow, no console or network errors, and images load on scroll.
+Visual QA was performed with Playwright headless Chromium at 1440px and 390px viewport widths in both light and dark themes, including the Admin home form. No horizontal overflow, no console errors, and all images load. The Admin Kind words repeater was verified to add, remove, and save testimonials.
 
 ## License
 
