@@ -1,0 +1,857 @@
+{
+  "hero-mandap": {
+    "id": "m_hero_mandap",
+    "filename": "hero-mandap.jpg",
+    "alt": "A bride and groom under a flower mandap at an Indian wedding ceremony.",
+    "width": 2400,
+    "height": 3600,
+    "variants": [
+      {
+        "w": 320,
+        "h": 480,
+        "url": "/images/media/m_hero_mandap/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 720,
+        "url": "/images/media/m_hero_mandap/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 1440,
+        "url": "/images/media/m_hero_mandap/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 2400,
+        "url": "/images/media/m_hero_mandap/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 3600,
+        "url": "/images/media/m_hero_mandap/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_hero_mandap/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "hero-mandap",
+      "url": "https://pexels.com/photo/hero-mandap"
+    },
+    "createdAt": "2026-11-16T06:25:46.087Z",
+    "grade": "warm"
+  },
+  "portrait-ajit": {
+    "id": "m_portrait_ajit",
+    "filename": "portrait-ajit.jpg",
+    "alt": "Portrait of the photographer Ajit Kumar holding a camera outdoors.",
+    "width": 2400,
+    "height": 3600,
+    "variants": [
+      {
+        "w": 320,
+        "h": 480,
+        "url": "/images/media/m_portrait_ajit/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 720,
+        "url": "/images/media/m_portrait_ajit/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 1440,
+        "url": "/images/media/m_portrait_ajit/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 2400,
+        "url": "/images/media/m_portrait_ajit/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 3600,
+        "url": "/images/media/m_portrait_ajit/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_portrait_ajit/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "portrait-ajit",
+      "url": "https://pexels.com/photo/portrait-ajit"
+    },
+    "createdAt": "2026-11-16T06:25:51.582Z",
+    "grade": "neutral"
+  },
+  "contact-image": {
+    "id": "m_contact_image",
+    "filename": "contact-image.jpg",
+    "alt": "Photographer with camera, ready to capture a celebration.",
+    "width": 2400,
+    "height": 1600,
+    "variants": [
+      {
+        "w": 320,
+        "h": 213,
+        "url": "/images/media/m_contact_image/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 320,
+        "url": "/images/media/m_contact_image/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 640,
+        "url": "/images/media/m_contact_image/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 1067,
+        "url": "/images/media/m_contact_image/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 1600,
+        "url": "/images/media/m_contact_image/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_contact_image/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "contact-image",
+      "url": "https://pexels.com/photo/contact-image"
+    },
+    "createdAt": "2026-11-16T06:25:54.139Z",
+    "grade": "neutral"
+  },
+  "ceremony-01": {
+    "id": "m_ceremony_01",
+    "filename": "ceremony-01.jpg",
+    "alt": "Bride and groom seated during the wedding ceremony with a sacred fire.",
+    "width": 2400,
+    "height": 1602,
+    "variants": [
+      {
+        "w": 320,
+        "h": 214,
+        "url": "/images/media/m_ceremony_01/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 320,
+        "url": "/images/media/m_ceremony_01/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 641,
+        "url": "/images/media/m_ceremony_01/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 1068,
+        "url": "/images/media/m_ceremony_01/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 1602,
+        "url": "/images/media/m_ceremony_01/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_ceremony_01/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "ceremony-01",
+      "url": "https://pexels.com/photo/ceremony-01"
+    },
+    "createdAt": "2026-11-16T06:25:56.761Z",
+    "grade": "warm"
+  },
+  "ritual-hands": {
+    "id": "m_ritual_hands",
+    "filename": "ritual-hands.jpg",
+    "alt": "Close-up of wedding ritual hands and offerings during the ceremony.",
+    "width": 2400,
+    "height": 1601,
+    "variants": [
+      {
+        "w": 320,
+        "h": 213,
+        "url": "/images/media/m_ritual_hands/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 320,
+        "url": "/images/media/m_ritual_hands/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 640,
+        "url": "/images/media/m_ritual_hands/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 1067,
+        "url": "/images/media/m_ritual_hands/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 1601,
+        "url": "/images/media/m_ritual_hands/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_ritual_hands/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "ritual-hands",
+      "url": "https://pexels.com/photo/ritual-hands"
+    },
+    "createdAt": "2026-11-16T06:25:59.052Z",
+    "grade": "warm"
+  },
+  "bride-veil": {
+    "id": "m_bride_veil",
+    "filename": "bride-veil.jpg",
+    "alt": "Bride portrait with traditional jewellery and a red veil.",
+    "width": 2400,
+    "height": 1597,
+    "variants": [
+      {
+        "w": 320,
+        "h": 213,
+        "url": "/images/media/m_bride_veil/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 319,
+        "url": "/images/media/m_bride_veil/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 639,
+        "url": "/images/media/m_bride_veil/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 1065,
+        "url": "/images/media/m_bride_veil/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 1597,
+        "url": "/images/media/m_bride_veil/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_bride_veil/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "bride-veil",
+      "url": "https://pexels.com/photo/bride-veil"
+    },
+    "createdAt": "2026-11-16T06:26:01.111Z",
+    "grade": "warm"
+  },
+  "reception-01": {
+    "id": "m_reception_01",
+    "filename": "reception-01.jpg",
+    "alt": "Bride and groom on stage at the wedding reception.",
+    "width": 2400,
+    "height": 1602,
+    "variants": [
+      {
+        "w": 320,
+        "h": 214,
+        "url": "/images/media/m_reception_01/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 320,
+        "url": "/images/media/m_reception_01/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 641,
+        "url": "/images/media/m_reception_01/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 1068,
+        "url": "/images/media/m_reception_01/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 1602,
+        "url": "/images/media/m_reception_01/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_reception_01/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "reception-01",
+      "url": "https://pexels.com/photo/reception-01"
+    },
+    "createdAt": "2026-11-16T06:26:04.192Z",
+    "grade": "warm"
+  },
+  "dance-01": {
+    "id": "m_dance_01",
+    "filename": "dance-01.jpg",
+    "alt": "Couple dancing at the wedding reception celebration.",
+    "width": 2400,
+    "height": 1600,
+    "variants": [
+      {
+        "w": 320,
+        "h": 213,
+        "url": "/images/media/m_dance_01/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 320,
+        "url": "/images/media/m_dance_01/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 640,
+        "url": "/images/media/m_dance_01/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 1067,
+        "url": "/images/media/m_dance_01/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 1600,
+        "url": "/images/media/m_dance_01/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_dance_01/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "dance-01",
+      "url": "https://pexels.com/photo/dance-01"
+    },
+    "createdAt": "2026-11-16T06:26:06.625Z",
+    "grade": "warm"
+  },
+  "detail-bouquet": {
+    "id": "m_detail_bouquet",
+    "filename": "detail-bouquet.jpg",
+    "alt": "Wedding rings resting beside a bridal bouquet of white roses.",
+    "width": 2400,
+    "height": 3600,
+    "variants": [
+      {
+        "w": 320,
+        "h": 480,
+        "url": "/images/media/m_detail_bouquet/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 720,
+        "url": "/images/media/m_detail_bouquet/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 1440,
+        "url": "/images/media/m_detail_bouquet/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 2400,
+        "url": "/images/media/m_detail_bouquet/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 3600,
+        "url": "/images/media/m_detail_bouquet/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_detail_bouquet/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "detail-bouquet",
+      "url": "https://pexels.com/photo/detail-bouquet"
+    },
+    "createdAt": "2026-11-16T06:26:11.528Z",
+    "grade": "neutral"
+  },
+  "bride-portrait": {
+    "id": "m_bride_portrait",
+    "filename": "bride-portrait.jpg",
+    "alt": "Bride in a red lehenga and heavy jewellery, eyes closed in a tender moment.",
+    "width": 2400,
+    "height": 1600,
+    "variants": [
+      {
+        "w": 320,
+        "h": 213,
+        "url": "/images/media/m_bride_portrait/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 320,
+        "url": "/images/media/m_bride_portrait/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 640,
+        "url": "/images/media/m_bride_portrait/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 1067,
+        "url": "/images/media/m_bride_portrait/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 1600,
+        "url": "/images/media/m_bride_portrait/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_bride_portrait/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "bride-portrait",
+      "url": "https://pexels.com/photo/bride-portrait"
+    },
+    "createdAt": "2026-11-16T06:26:14.264Z",
+    "grade": "warm"
+  },
+  "groom-01": {
+    "id": "m_groom_01",
+    "filename": "groom-01.jpg",
+    "alt": "Groom in a cream sherwani and red turban standing outdoors.",
+    "width": 2400,
+    "height": 3600,
+    "variants": [
+      {
+        "w": 320,
+        "h": 480,
+        "url": "/images/media/m_groom_01/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 720,
+        "url": "/images/media/m_groom_01/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 1440,
+        "url": "/images/media/m_groom_01/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 2400,
+        "url": "/images/media/m_groom_01/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 3600,
+        "url": "/images/media/m_groom_01/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_groom_01/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "groom-01",
+      "url": "https://pexels.com/photo/groom-01"
+    },
+    "createdAt": "2026-11-16T06:26:21.304Z",
+    "grade": "warm"
+  },
+  "groom-02": {
+    "id": "m_groom_02",
+    "filename": "groom-02.jpg",
+    "alt": "Groom portrait in traditional wedding attire with a red turban.",
+    "width": 2400,
+    "height": 3595,
+    "variants": [
+      {
+        "w": 320,
+        "h": 479,
+        "url": "/images/media/m_groom_02/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 719,
+        "url": "/images/media/m_groom_02/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 1438,
+        "url": "/images/media/m_groom_02/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 2397,
+        "url": "/images/media/m_groom_02/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 3595,
+        "url": "/images/media/m_groom_02/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_groom_02/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "groom-02",
+      "url": "https://pexels.com/photo/groom-02"
+    },
+    "createdAt": "2026-11-16T06:26:27.977Z",
+    "grade": "warm"
+  },
+  "couple-01": {
+    "id": "m_couple_01",
+    "filename": "couple-01.jpg",
+    "alt": "Bride and groom embracing at night with warm bokeh lights behind them.",
+    "width": 2400,
+    "height": 3600,
+    "variants": [
+      {
+        "w": 320,
+        "h": 480,
+        "url": "/images/media/m_couple_01/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 720,
+        "url": "/images/media/m_couple_01/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 1440,
+        "url": "/images/media/m_couple_01/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 2400,
+        "url": "/images/media/m_couple_01/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 3600,
+        "url": "/images/media/m_couple_01/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_couple_01/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "couple-01",
+      "url": "https://pexels.com/photo/couple-01"
+    },
+    "createdAt": "2026-11-16T06:26:33.218Z",
+    "grade": "warm"
+  },
+  "sangeet-01": {
+    "id": "m_sangeet_01",
+    "filename": "sangeet-01.jpg",
+    "alt": "Bride and groom dancing at the sangeet ceremony with family.",
+    "width": 2400,
+    "height": 2400,
+    "variants": [
+      {
+        "w": 320,
+        "h": 320,
+        "url": "/images/media/m_sangeet_01/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 480,
+        "url": "/images/media/m_sangeet_01/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 960,
+        "url": "/images/media/m_sangeet_01/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 1600,
+        "url": "/images/media/m_sangeet_01/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 2400,
+        "url": "/images/media/m_sangeet_01/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_sangeet_01/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "sangeet-01",
+      "url": "https://pexels.com/photo/sangeet-01"
+    },
+    "createdAt": "2026-11-16T06:26:37.667Z",
+    "grade": "warm"
+  },
+  "sangeet-a": {
+    "id": "m_sangeet_a",
+    "filename": "sangeet-a.jpg",
+    "alt": "Bride dancing during the sangeet ceremony in a yellow outfit.",
+    "width": 1600,
+    "height": 1067,
+    "variants": [
+      {
+        "w": 320,
+        "h": 213,
+        "url": "/images/media/m_sangeet_a/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 320,
+        "url": "/images/media/m_sangeet_a/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 640,
+        "url": "/images/media/m_sangeet_a/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 1067,
+        "url": "/images/media/m_sangeet_a/1600.webp"
+      }
+    ],
+    "thumb": "/images/media/m_sangeet_a/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "sangeet-a",
+      "url": "https://pexels.com/photo/sangeet-a"
+    },
+    "createdAt": "2026-11-16T06:26:38.954Z",
+    "grade": "warm"
+  },
+  "couple-veil": {
+    "id": "m_couple_veil",
+    "filename": "couple-veil.jpg",
+    "alt": "Bride and groom close together under a golden veil at night.",
+    "width": 2400,
+    "height": 3598,
+    "variants": [
+      {
+        "w": 320,
+        "h": 480,
+        "url": "/images/media/m_couple_veil/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 720,
+        "url": "/images/media/m_couple_veil/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 1439,
+        "url": "/images/media/m_couple_veil/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 2399,
+        "url": "/images/media/m_couple_veil/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 3598,
+        "url": "/images/media/m_couple_veil/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_couple_veil/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "couple-veil",
+      "url": "https://pexels.com/photo/couple-veil"
+    },
+    "createdAt": "2026-11-16T06:26:44.583Z",
+    "grade": "warm"
+  },
+  "couple-bokeh": {
+    "id": "m_couple_bokeh",
+    "filename": "couple-bokeh.jpg",
+    "alt": "Bride and groom posing with glowing bokeh lights in the background.",
+    "width": 2400,
+    "height": 3598,
+    "variants": [
+      {
+        "w": 320,
+        "h": 480,
+        "url": "/images/media/m_couple_bokeh/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 720,
+        "url": "/images/media/m_couple_bokeh/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 1439,
+        "url": "/images/media/m_couple_bokeh/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 2399,
+        "url": "/images/media/m_couple_bokeh/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 3598,
+        "url": "/images/media/m_couple_bokeh/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_couple_bokeh/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "couple-bokeh",
+      "url": "https://pexels.com/photo/couple-bokeh"
+    },
+    "createdAt": "2026-11-16T06:26:49.649Z",
+    "grade": "warm"
+  },
+  "rings-01": {
+    "id": "m_rings_01",
+    "filename": "rings-01.jpg",
+    "alt": "Wedding rings on a white surface beside a floral bouquet.",
+    "width": 2400,
+    "height": 3600,
+    "variants": [
+      {
+        "w": 320,
+        "h": 480,
+        "url": "/images/media/m_rings_01/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 720,
+        "url": "/images/media/m_rings_01/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 1440,
+        "url": "/images/media/m_rings_01/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 2400,
+        "url": "/images/media/m_rings_01/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 3600,
+        "url": "/images/media/m_rings_01/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_rings_01/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "rings-01",
+      "url": "https://pexels.com/photo/rings-01"
+    },
+    "createdAt": "2026-11-16T06:26:55.554Z",
+    "grade": "warm"
+  },
+  "groom-bw": {
+    "id": "m_groom_bw",
+    "filename": "groom-bw.jpg",
+    "alt": "Black-and-white portrait of the groom in traditional wedding attire.",
+    "width": 2400,
+    "height": 3600,
+    "variants": [
+      {
+        "w": 320,
+        "h": 480,
+        "url": "/images/media/m_groom_bw/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 720,
+        "url": "/images/media/m_groom_bw/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 1440,
+        "url": "/images/media/m_groom_bw/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 2400,
+        "url": "/images/media/m_groom_bw/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 3600,
+        "url": "/images/media/m_groom_bw/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_groom_bw/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "groom-bw",
+      "url": "https://pexels.com/photo/groom-bw"
+    },
+    "createdAt": "2026-11-16T06:26:59.993Z",
+    "grade": "mono"
+  },
+  "bride-sindoor": {
+    "id": "m_bride_sindoor",
+    "filename": "bride-sindoor.jpg",
+    "alt": "Bride with sindoor and red bridal jewellery during the ceremony.",
+    "width": 2400,
+    "height": 3607,
+    "variants": [
+      {
+        "w": 320,
+        "h": 481,
+        "url": "/images/media/m_bride_sindoor/320.webp"
+      },
+      {
+        "w": 480,
+        "h": 721,
+        "url": "/images/media/m_bride_sindoor/480.webp"
+      },
+      {
+        "w": 960,
+        "h": 1443,
+        "url": "/images/media/m_bride_sindoor/960.webp"
+      },
+      {
+        "w": 1600,
+        "h": 2405,
+        "url": "/images/media/m_bride_sindoor/1600.webp"
+      },
+      {
+        "w": 2400,
+        "h": 3607,
+        "url": "/images/media/m_bride_sindoor/2400.webp"
+      }
+    ],
+    "thumb": "/images/media/m_bride_sindoor/320.webp",
+    "source": "seed",
+    "credit": {
+      "provider": "Pexels",
+      "photoId": "bride-sindoor",
+      "url": "https://pexels.com/photo/bride-sindoor"
+    },
+    "createdAt": "2026-11-16T06:27:04.729Z",
+    "grade": "warm"
+  }
+}

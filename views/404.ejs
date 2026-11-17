@@ -1,0 +1,16 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main id="main" class="error-page">
+  <div class="shell error-page__inner">
+    <p class="eyebrow">404 — Not found</p>
+    <h1 class="display error-page__title">This page has<br><em>wandered off.</em></h1>
+    <p class="error-page__text">The page you are looking for may have moved, or the link may be out of date. The work is still where you left it.</p>
+    <div class="error-page__actions">
+      <a class="button button--ink" href="/">Return home <%- include('partials/icon', { name: 'arrowUpRight' }) %></a>
+      <a class="link-arrow" href="/work"><span>Browse the work</span><%- include('partials/icon', { name: 'arrow' }) %></a>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

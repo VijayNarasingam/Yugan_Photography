@@ -1,0 +1,190 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero__media">
+      <%- picture(content.home.hero.image, {
+        priority: true,
+        sizes: '100vw',
+        class: 'hero__img'
+      }) %>
+      <div class="hero__shade" aria-hidden="true"></div>
+    </div>
+
+    <div class="hero__content shell">
+      <div class="hero__top">
+        <p class="eyebrow hero__eyebrow"><%= content.home.hero.eyebrow %></p>
+        <p class="hero__edition">Portfolio <span aria-hidden="true">/</span> 2026</p>
+      </div>
+
+      <div class="hero__main">
+        <% var words = content.home.hero.title.trim().split(/\s+/); %>
+        <h1 class="hero__title" id="hero-title">
+          <span><%= words[0] %></span>
+          <% if (words.length > 1) { %><em><%= words.slice(1).join(' ') %></em><% } %>
+        </h1>
+        <div class="hero__aside">
+          <p class="hero__statement"><%= content.home.hero.statement %></p>
+          <a class="hero__cta" href="/work">
+            <span><%= content.home.hero.ctaLabel %></span>
+            <span class="hero__cta-icon" aria-hidden="true"><%- include('partials/icon', { name: 'arrowDown' }) %></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero__meta">
+        <p><%- include('partials/icon', { name: 'pin' }) %> <%= site.location %></p>
+        <p class="hero__meta-mid">Editorial <span aria-hidden="true">·</span> Portrait <span aria-hidden="true">·</span> Interiors</p>
+        <p class="hero__scroll" aria-hidden="true">Scroll <span><%- include('partials/icon', { name: 'arrowDown' }) %></span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section intro" aria-labelledby="intro-title">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow"><%= content.home.intro.kicker %></p>
+        <p class="section-head__index">01 <span aria-hidden="true">/</span> 05</p>
+      </div>
+
+      <div class="intro__grid">
+        <div class="intro__text">
+          <h2 class="display intro__title" id="intro-title"><%= content.home.intro.title %></h2>
+          <p class="intro__body"><%= content.home.intro.body %></p>
+          <a class="link-arrow" href="/about">
+            <span>More about the studio</span>
+            <%- include('partials/icon', { name: 'arrow' }) %>
+          </a>
+        </div>
+
+        <figure class="intro__figure">
+          <%- picture(content.home.intro.image, {
+            class: 'intro__img',
+            sizes: '(min-width: 900px) 48vw, 100vw'
+          }) %>
+          <figcaption class="figure-caption">
+            <span>Fig. 01</span>
+            <span><%= site.location %></span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section featured" aria-labelledby="featured-title">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">Selected work</p>
+        <p class="section-head__index">02 <span aria-hidden="true">/</span> 05</p>
+        <a class="section-head__link" href="/work">All projects <%- include('partials/icon', { name: 'arrowUpRight' }) %></a>
+      </div>
+
+      <h2 class="visually-hidden" id="featured-title">Selected projects</h2>
+
+      <div class="featured__grid">
+        <% featured.forEach(function (project, i) { %>
+          <%- include('partials/project-card', {
+            project: project,
+            index: String(i + 1).padStart(2, '0'),
+            variant: i === 0 ? 'lead' : (i === 1 ? 'offset' : 'center'),
+            sizes: i === 0 ? '(min-width: 1100px) 58vw, 100vw' : '(min-width: 1100px) 34vw, 100vw'
+          }) %>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+
+  <% if (recentPhotos && recentPhotos.length) { %>
+    <section class="section recent" aria-labelledby="recent-title">
+      <div class="shell">
+        <div class="section-head">
+          <p class="eyebrow">Recent frames</p>
+          <p class="section-head__index">03 <span aria-hidden="true">/</span> 05</p>
+          <a class="section-head__link" href="/work">View the archive <%- include('partials/icon', { name: 'arrowUpRight' }) %></a>
+        </div>
+
+        <h2 class="visually-hidden" id="recent-title">Recent frames from the archive</h2>
+
+        <div class="recent__grid">
+          <% recentPhotos.forEach(function (photo) { %>
+            <a class="recent__item" href="/work/<%= photo.projectSlug %>" aria-label="View <%= photo.galleryTitle %> — <%= photo.caption || 'photograph' %>">
+              <%- picture(photo, {
+                class: 'recent__img',
+                sizes: '(min-width: 1100px) 31vw, (min-width: 720px) 46vw, 92vw'
+              }) %>
+              <span class="recent__view" aria-hidden="true"><%- include('partials/icon', { name: 'arrowUpRight' }) %></span>
+            </a>
+          <% }); %>
+        </div>
+      </div>
+    </section>
+  <% } %>
+
+  <section class="section approach home-approach" aria-labelledby="home-approach-title">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">Approach</p>
+        <p class="section-head__index">04 <span aria-hidden="true">/</span> 05</p>
+      </div>
+
+      <div class="home-approach__head">
+        <h2 class="display approach__title" id="home-approach-title">A slower way<br><em>of seeing.</em></h2>
+        <p class="home-approach__lead">The best photographs rarely arrive on cue. They come from time, trust, and paying attention to what is already happening.</p>
+      </div>
+
+      <div class="approach__grid">
+        <% (content.about.approach || []).forEach(function (item, i) { %>
+          <article class="approach__item">
+            <span class="approach__num"><%= String(i + 1).padStart(2, '0') %></span>
+            <h3 class="approach__name"><%= item.title %></h3>
+            <p class="approach__text"><%= item.body %></p>
+          </article>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+
+  <section class="quote" aria-label="Artist statement">
+    <div class="shell quote__inner">
+      <span class="quote__mark" aria-hidden="true">“</span>
+      <blockquote class="quote__text">
+        <p><%= content.home.quote.text %></p>
+      </blockquote>
+      <cite class="quote__cite"><span></span><%= content.home.quote.attribution %></cite>
+    </div>
+  </section>
+
+  <section class="section home-services" aria-labelledby="home-services-title">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">Services</p>
+        <p class="section-head__index">05 <span aria-hidden="true">/</span> 05</p>
+      </div>
+
+      <div class="home-services__grid">
+        <div class="home-services__intro">
+          <h2 class="display home-services__title" id="home-services-title">Coverage that follows the day.</h2>
+          <p class="home-services__body">From the first mehendi to the last dance, I photograph the parts of the wedding you will want to return to — the rituals, the people, and the in-between.</p>
+          <a class="link-arrow" href="/contact">
+            <span>Enquire about your date</span>
+            <%- include('partials/icon', { name: 'arrow' }) %>
+          </a>
+        </div>
+
+        <ul class="home-services__list">
+          <% (content.about.highlights.services || []).forEach(function (service, i) { %>
+            <li>
+              <span><%= String(i + 1).padStart(2, '0') %></span>
+              <%= service %>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <%- include('partials/cta') %>
+</main>
+
+<%- include('partials/footer') %>

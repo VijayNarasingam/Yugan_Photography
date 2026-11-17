@@ -1,0 +1,16 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main id="main" class="error-page">
+  <div class="shell error-page__inner">
+    <p class="eyebrow"><%= status || 500 %> — <%= status === 404 ? 'Not found' : 'Something went wrong' %></p>
+    <h1 class="display error-page__title">A small<br><em>interruption.</em></h1>
+    <p class="error-page__text"><%= message || 'Something went wrong. Please try again in a moment.' %></p>
+    <div class="error-page__actions">
+      <a class="button button--ink" href="/">Return home <%- include('partials/icon', { name: 'arrowUpRight' }) %></a>
+      <a class="link-arrow" href="/contact"><span>Get in touch</span><%- include('partials/icon', { name: 'arrow' }) %></a>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

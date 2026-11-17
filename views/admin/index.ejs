@@ -1,0 +1,151 @@
+<%- include('../partials/head') %>
+
+<div class="admin-shell" data-admin>
+  <aside class="admin-sidebar" id="admin-sidebar" data-admin-sidebar>
+    <div class="admin-sidebar__head">
+      <a class="admin-brand" href="/" aria-label="<%= site.name %> — view site">
+        <span class="admin-brand__mark">AK</span>
+        <span class="admin-brand__text">
+          <span class="admin-brand__name"><%= site.name %></span>
+          <span class="admin-brand__role">Studio manager</span>
+        </span>
+      </a>
+      <button class="admin-sidebar__close" type="button" data-sidebar-close aria-label="Close navigation">
+        <%- include('../partials/icon', { name: 'close' }) %>
+      </button>
+    </div>
+
+    <nav class="admin-nav" aria-label="Studio sections">
+      <p class="admin-nav__label">Studio</p>
+      <a href="#/overview" data-route="overview"><%- include('../partials/icon', { name: 'home' }) %><span>Overview</span></a>
+      <a href="#/home" data-route="home"><%- include('../partials/icon', { name: 'grid' }) %><span>Home page</span></a>
+      <a href="#/about" data-route="about"><%- include('../partials/icon', { name: 'user' }) %><span>About page</span></a>
+      <a href="#/contact" data-route="contact"><%- include('../partials/icon', { name: 'mail' }) %><span>Contact page</span></a>
+      <a href="#/work" data-route="work"><%- include('../partials/icon', { name: 'layers' }) %><span>Projects</span><em data-count="projects"></em></a>
+      <a href="#/galleries" data-route="galleries"><%- include('../partials/icon', { name: 'image' }) %><span>Galleries</span><em data-count="galleries"></em></a>
+      <a href="#/library" data-route="library"><%- include('../partials/icon', { name: 'archive' }) %><span>Image library</span><em data-count="media"></em></a>
+
+      <p class="admin-nav__label">Inbox</p>
+      <a href="#/inquiries" data-route="inquiries"><%- include('../partials/icon', { name: 'inbox' }) %><span>Enquiries</span><em data-count="inquiries" data-count-unread></em></a>
+
+      <p class="admin-nav__label">Studio settings</p>
+      <a href="#/settings" data-route="settings"><%- include('../partials/icon', { name: 'settings' }) %><span>Site settings</span></a>
+    </nav>
+
+    <div class="admin-sidebar__foot">
+      <a class="admin-sidebar__site" href="/" target="_blank" rel="noopener">
+        <%- include('../partials/icon', { name: 'external' }) %>
+        <span>View live site</span>
+      </a>
+      <div class="admin-user">
+        <span class="admin-user__avatar" aria-hidden="true"><%= (adminUsername || 'A').slice(0, 1).toUpperCase() %></span>
+        <span class="admin-user__meta">
+          <span class="admin-user__name"><%= adminUsername %></span>
+          <span class="admin-user__role">Administrator</span>
+        </span>
+        <form method="post" action="/admin/logout">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button class="admin-user__logout" type="submit" aria-label="Sign out">
+            <%- include('../partials/icon', { name: 'logout' }) %>
+          </button>
+        </form>
+      </div>
+    </div>
+  </aside>
+
+  <div class="admin-scrim" data-sidebar-scrim hidden></div>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar__left">
+        <button class="admin-topbar__menu" type="button" data-sidebar-open aria-label="Open navigation" aria-controls="admin-sidebar" aria-expanded="false">
+          <%- include('../partials/icon', { name: 'menu' }) %>
+        </button>
+        <div class="admin-topbar__title">
+          <p class="admin-topbar__eyebrow">Studio manager</p>
+          <p class="admin-topbar__section" data-section-title>Overview</p>
+        </div>
+      </div>
+      <div class="admin-topbar__right">
+        <span class="admin-saved" data-save-state aria-live="polite"></span>
+        <a class="admin-topbar__view" href="/" target="_blank" rel="noopener">
+          <%- include('../partials/icon', { name: 'eye' }) %>
+          <span>View site</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="admin-view" id="admin-view" tabindex="-1">
+      <div class="admin-loading">
+        <span class="spinner" aria-hidden="true"></span>
+        <p>Opening the studio…</p>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="toast-region" data-toast-region aria-live="polite" aria-atomic="false"></div>
+
+<dialog class="admin-dialog" id="confirm-dialog" data-confirm-dialog>
+  <form method="dialog" class="admin-dialog__form">
+    <div class="admin-dialog__head">
+      <p class="eyebrow" data-confirm-kicker>Please confirm</p>
+      <h2 class="admin-dialog__title" data-confirm-title>Are you sure?</h2>
+    </div>
+    <div class="admin-dialog__body">
+      <p data-confirm-message></p>
+    </div>
+    <div class="admin-dialog__foot">
+      <button class="button button--ghost" type="button" data-confirm-cancel>Cancel</button>
+      <button class="button button--danger" type="button" data-confirm-ok>Remove</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="admin-dialog admin-dialog--editor" id="editor-dialog" data-editor-dialog>
+  <div class="admin-dialog__form" data-editor-content></div>
+</dialog>
+
+<dialog class="admin-dialog admin-dialog--media" id="media-dialog" data-media-dialog>
+  <div class="admin-dialog__form">
+    <div class="admin-dialog__head admin-dialog__head--row">
+      <div>
+        <p class="eyebrow">Image library</p>
+        <h2 class="admin-dialog__title">Choose a photograph</h2>
+      </div>
+      <button class="icon-button" type="button" data-media-close aria-label="Close image library">
+        <%- include('../partials/icon', { name: 'close' }) %>
+      </button>
+    </div>
+    <div class="media-picker__bar">
+      <label class="search-field">
+        <%- include('../partials/icon', { name: 'search' }) %>
+        <span class="visually-hidden">Search images</span>
+        <input type="search" placeholder="Search by name or alt text" data-media-search>
+      </label>
+      <button class="button button--outline button--small" type="button" data-media-upload>
+        <%- include('../partials/icon', { name: 'upload' }) %> Upload
+      </button>
+    </div>
+    <div class="admin-dialog__body media-picker__body">
+      <div class="media-picker__grid" data-media-grid></div>
+      <div class="empty-state empty-state--admin" data-media-empty hidden>
+        <p class="eyebrow">No images</p>
+        <p>Upload a photograph to use it here.</p>
+      </div>
+    </div>
+    <div class="admin-dialog__foot">
+      <p class="media-picker__hint">New uploads appear in the library immediately.</p>
+      <button class="button button--ghost" type="button" data-media-close>Cancel</button>
+    </div>
+  </div>
+</dialog>
+
+<input type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple hidden data-global-upload>
+
+<script src="/js/admin-core.js" defer></script>
+<script src="/js/admin-views.js" defer></script>
+<script src="/js/admin-collections.js" defer></script>
+<script src="/js/admin.js" defer></script>
+</body>
+</html>

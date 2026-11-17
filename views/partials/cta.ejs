@@ -1,0 +1,17 @@
+<section class="cta" aria-labelledby="cta-title">
+  <div class="cta__media">
+    <%- picture(content.home.cta.image, {
+      class: 'cta__img',
+      sizes: '(min-width: 900px) 50vw, 100vw'
+    }) %>
+  </div>
+  <div class="cta__body">
+    <p class="eyebrow"><%= content.home.cta.linkLabel %></p>
+    <h2 class="cta__title" id="cta-title"><%= content.home.cta.title %></h2>
+    <p class="cta__text"><%= content.home.cta.body %></p>
+    <a class="link-arrow" href="/contact">
+      <span>Start a conversation</span>
+      <%- include('icon', { name: 'arrow' }) %>
+    </a>
+  </div>
+</section>

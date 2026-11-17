@@ -1,0 +1,13 @@
+node_modules/
+.env
+backup/
+data/content.json
+data/inquiries.json
+data/auth.json
+data/session-secret
+data/initial-admin.txt
+data/og-cache/
+public/uploads/
+npm-debug.log*
+.DS_Store
+Thumbs.db
