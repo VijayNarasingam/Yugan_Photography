@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yugan-photography",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-09-29",
+  "assets": {
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  },
+  "observability": { "enabled": true },
+  // Local dev bindings. Both are simulated under .wrangler/state; replace the
+  // ids with real ones (or provision them in Sites) before publishing.
+  "d1_databases": [
+    { "binding": "DB", "database_name": "yugan-site", "database_id": "00000000-0000-0000-0000-000000000000" }
+  ],
+  "r2_buckets": [{ "binding": "FILES", "bucket_name": "yugan-media" }],
+  // Change both before this goes anywhere public. On Sites, move the passcode
+  // into a secret instead of a var.
+  "vars": {
+    "ADMIN_PASSCODE": "yugan2026",
+    "SESSION_SECRET": "replace-this-session-secret"
+  }
+}

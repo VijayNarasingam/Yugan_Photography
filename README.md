@@ -1,160 +1,85 @@
 # Yugan Photography
 
-A polished, editorial five-page wedding photographer portfolio website with a working single-administrator CMS.
+Wedding portfolio for **Ajith Kumar** — candid wedding, reception and pre-wedding
+photography in Salem, Tamil Nadu. Built with Vite, React 19, Tailwind v4 and a
+Hono Worker that stores the editable content in D1 and uploaded photographs in R2.
 
-**Photographer:** Ajit Kumar  
-**Brand:** Yugan Photography  
-**Location:** Jaipur, Rajasthan, India  
-**Email:** yuganphotography@gmail.com  
-**Instagram:** @yugan.photography
-
-## Pages
-
-| Page | Path | Public? |
-|------|------|---------|
-| Home | `/` | Yes |
-| About | `/about` | Yes |
-| Work | `/work` | Yes |
-| Project detail | `/work/:slug` | Yes |
-| Contact | `/contact` | Yes |
-| Admin login | `/admin/login` | No (auth required) |
-| Admin (SPA) | `/admin` | No (auth required) |
-
-The Admin area is **not linked from public navigation** and requires real authentication — it is not hidden by URL alone.
-
-## Stack
-
-- Node 24 + Express 5
-- EJS server-rendered pages
-- Vanilla JavaScript (no build step)
-- JSON file store (`data/content.json`, `data/inquiries.json`, `data/auth.json`)
-- Sharp image processing with WebP variants (5 responsive sizes)
-- bcryptjs password hashing
-- HMAC-signed HttpOnly session cookie (SameSite=Strict)
-- CSRF cookie + token protection
-- Login rate limiting
-- Self-hosted Google Fonts (Newsreader serif, Inter sans)
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 24+
-- `npm` or `yarn`
-
-### Install
-
-```bash
-npm install
+```sh
+npm install        # or bun install
+npm run dev        # http://localhost:5363
+npm run typecheck
+npm run build
 ```
 
-### Prepare images
+## Screens
 
-The media library is built from source photographs:
+| Route | What it is |
+| --- | --- |
+| `/` | Hero (editable banner), manifesto, selected weddings, frames rail, coverage, process, testimonial, venues, CTA |
+| `/work` | Wedding gallery with function filters, grid/index views and a keyboard lightbox |
+| `/work/:slug` | One wedding: venue meta, story, photograph stack, next wedding |
+| `/about` | Ajith's story, portrait, facts, approach, kit, timeline |
+| `/contact` | Enquiry form (saved to the studio inbox), direct lines, studio card, FAQ |
+| `/studio` | **Hidden** admin: not linked anywhere on the public site |
+| anything else | 404 |
 
-```bash
-npm run prepare:images
-```
+## The hidden studio
 
-This downloads/grades source images and writes `data/media.seed.json` plus optimized WebP variants under `public/images/media/`.
+Open **`/studio`** directly. The local passcode is `yugan2026` (set in
+`wrangler.jsonc` as `ADMIN_PASSCODE`). Change it — and `SESSION_SECRET` — before
+publishing, and keep the passcode in a secret rather than a var on a real host.
 
-### Configure
+From the studio you can change:
 
-Copy `.env.example` to `.env` and set a strong admin password:
+- **Hero** — banner image (upload or URL), eyebrow, both headline lines,
+  standfirst, availability line, with a live preview.
+- **Gallery** — add, edit, reorder and delete weddings; cover image, every
+  photograph with its own caption, function, year, venue, story paragraphs and
+  whether it appears in the home page selection.
+- **About** — portrait, standfirst, biography paragraphs, facts and approach steps.
+- **Contact** — email, phone, WhatsApp, Instagram, address, hours, map link,
+  availability note, brand and photographer names.
+- **Inbox** — every enquiry sent from the contact form, with delete.
 
-```bash
-cp .env.example .env
-```
+Uploads go to R2 (`env.FILES`) and are served from `/media/*`. Saving writes one
+JSON row to D1 (`env.DB`); the public site reads it from `GET /api/site`.
+`Reset defaults` restores `defaultSite` from `src/content.ts`.
 
-Edit `.env`:
+## Where things live
 
-```
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=your-secure-password-here
-```
+| What | File |
+| --- | --- |
+| Copy, weddings, coverage, FAQ, defaults | `src/content.ts` |
+| Tokens, grain, marquee, motion | `src/styles.css` |
+| Header, footer, cursor, scroll progress | `src/components/Chrome.tsx` |
+| Wedding cards, index, lightbox | `src/components/Gallery.tsx` |
+| Buttons, fields, reveals, counters, accordion | `src/components/ui.tsx` |
+| Site data context | `src/lib/site.tsx` |
+| API client | `src/lib/api.ts` |
+| Worker routes, auth, validation | `src/worker/index.ts` |
 
-### Run
+## Worker routes
 
-```bash
-npm start
-```
+| Route | Notes |
+| --- | --- |
+| `GET /api/site` | Public site JSON, seeded from `defaultSite` on first run |
+| `GET /api/auth` · `POST /api/auth` · `POST /api/auth/logout` | HMAC session cookie, 7 days |
+| `PUT /api/admin/site` · `POST /api/admin/site/reset` | Auth required |
+| `POST /api/admin/media` | Auth required, image only, 10 MB cap |
+| `GET /media/*` | R2 object with immutable caching |
+| `POST /api/contact` | Validated, stored in D1, returns a reference |
+| `GET /api/admin/messages` · `DELETE /api/admin/messages/:id` | Auth required |
 
-The site runs at `http://127.0.0.1:3000`.  
-The admin studio is at `http://127.0.0.1:3000/admin/login`.
+## Photographs and details to replace
 
-### First login
+The photographs in `public/images/gallery/` are Unsplash placeholders standing in
+for Ajith's real wedding work — replace them in the studio, or drop files at the
+same paths. The phone number, email and address in `src/content.ts` are sample
+values, and the venue names are illustrative.
 
-Seed credentials (from `ADMIN_USERNAME` / `ADMIN_PASSWORD` in `.env`):
+## Sharing it
 
-- **Username:** `admin`
-- **Password:** set in `.env` (default example: `change-this-before-first-run`)
-
-You **must** change the password after first login via Admin → Site settings → Password.
-
-## Admin
-
-The admin is a single-page hash-routed app:
-
-- `#/overview` — Studio dashboard and stats
-- `#/home` — Hero, introduction, quote, kind words, contact panel
-- `#/about` — Biography, approach, experience, highlights
-- `#/contact` — Page wording, email/phone, project types
-- `#/work` — Projects: add, edit, reorder, delete
-- `#/galleries` — Galleries list
-- `#/galleries/:id` — Gallery detail: upload, edit, replace, reorder, delete photos
-- `#/library` — Image library: alt text, delete
-- `#/inquiries` — Contact form enquiries: mark read, delete, reply
-- `#/settings` — Site identity, social links, password change, backup
-
-All changes save to the public site immediately.
-
-## Home page content
-
-The home page runs: hero → introduction → selected work → recent frames → approach → quote → services → kind words → recognition → contact CTA.
-
-- **Introduction** includes a studio facts row built from Site settings and About → Experience.
-- **Selected work** and **Recent frames** use Projects and Galleries. Recent frames pulls six photographs from visible galleries, skipping featured project covers.
-- **Approach** and **Services** reuse About → Approach and About → Highlights → Services.
-- **Kind words** is managed at Admin → Home page → Kind words (up to 9 testimonials with quote, names, and context).
-- **Recognition** reuses About → Highlights → Publications, Awards, and Clients.
-
-The Kind words section hides when no testimonials are published; Recognition hides when all three lists are empty. Sections that reuse About or Gallery content update automatically when that content changes.
-
-## Image credits
-
-The sample photographs are sourced from [Pexels](https://pexels.com) under the Pexels License. They are placeholders intended to be replaced through the Admin → Media library. See `source-images/CREDITS.md` for the full photo list.
-
-## Fonts
-
-Fonts are self-hosted from Google Fonts under the SIL Open Font License (OFL):
-
-- `public/fonts/inter-latin.woff2` — Inter (sans)
-- `public/fonts/newsreader-latin.woff2` — Newsreader (serif)
-- `public/fonts/newsreader-italic-latin.woff2` — Newsreader Italic (serif)
-
-See `docs/DESIGN.md` for the font license note.
-
-## Data
-
-Written content lives in `data/`:
-- `content.json` — site, home, about, contact, projects, galleries, media references
-- `inquiries.json` — contact form submissions
-- `auth.json` — administrator credentials (hashed)
-- `session-secret` — session signing key (generated at runtime)
-
-Uploaded images live in `public/uploads/`. For a complete backup, copy `data/` and `public/uploads/`.
-
-```bash
-# Download a JSON content backup from the admin (Site settings → Backup)
-# or curl: curl http://127.0.0.1:3000/api/admin/backup > backup.json
-```
-
-## Visual QA
-
-Visual QA was performed with Playwright headless Chromium at 1440px and 390px viewport widths in both light and dark themes, including the Admin home form. No horizontal overflow, no console errors, and all images load. The Admin Kind words repeater was verified to add, remove, and save testimonials.
-
-## License
-
-Site code: MIT.  
-Photographs: Pexels License (placeholders — replace via Admin).  
-Fonts: SIL Open Font License (OFL).
+`npm run build` writes `dist/client` (assets) and `dist/yugan_photography`
+(Worker). `deploy.json` describes both for the Sites uploader. Before publishing
+for real, provision a D1 database and an R2 bucket and put their ids in
+`wrangler.jsonc`, then move `ADMIN_PASSCODE` and `SESSION_SECRET` into secrets.
