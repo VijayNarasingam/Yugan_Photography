@@ -54,6 +54,20 @@ export const api = {
   contact: (payload: ContactPayload) =>
     request<{ reference: string }>('/api/contact', json(payload)),
   async upload(file: File): Promise<string> {
+    if ((await storageDriver()) === 'blob') {
+      // Vercel: upload straight to Blob so camera-sized images don't hit the
+      // 4.5 MB function body limit.
+      const { upload } = await import('@vercel/blob/client')
+      const ext = (file.name.split('.').pop() ?? 'webp').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 5) || 'webp'
+      const key = `media/${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}.${ext}`
+      const blob = await upload(key, file, {
+        access: 'private',
+        handleUploadUrl: '/api/admin/media/upload',
+        contentType: file.type,
+      })
+      return `/media/${blob.pathname.replace(/^media\//, '')}`
+    }
+
     const form = new FormData()
     form.append('file', file)
     const res = await fetch('/api/admin/media', { method: 'POST', body: form, credentials: 'same-origin' })
@@ -61,4 +75,18 @@ export const api = {
     if (!res.ok || !data?.url) throw new ApiError(data?.error ?? 'Upload failed.', res.status)
     return data.url
   },
+}
+
+let driver: 'r2' | 'blob' | null = null
+
+async function storageDriver(): Promise<'r2' | 'blob'> {
+  if (driver) return driver
+  try {
+    const res = await fetch('/api/health')
+    const data = (await res.json().catch(() => null)) as { storage?: string } | null
+    driver = data?.storage === 'blob' ? 'blob' : 'r2'
+  } catch {
+    driver = 'r2'
+  }
+  return driver
 }

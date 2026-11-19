@@ -1,0 +1,7 @@
+.env
+.env.*
+dev.log
+.freebuff
+.vercel
+dist
+node_modules

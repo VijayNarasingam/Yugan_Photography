@@ -56,7 +56,11 @@ JSON row to D1 (`env.DB`); the public site reads it from `GET /api/site`.
 | Buttons, fields, reveals, counters, accordion | `src/components/ui.tsx` |
 | Site data context | `src/lib/site.tsx` |
 | API client | `src/lib/api.ts` |
-| Worker routes, auth, validation | `src/worker/index.ts` |
+| Worker routes, auth, validation | `src/server/app.ts` |
+| D1 + R2 adapter | `src/server/cloudflare.ts` |
+| Vercel Blob adapter | `src/server/vercel.ts` |
+| Cloudflare entry | `src/worker/index.ts` |
+| Vercel entry + bundler | `src/server/vercel-entry.ts`, `scripts/build-api.mjs` |
 
 ## Worker routes
 
@@ -77,9 +81,38 @@ for Ajith's real wedding work — replace them in the studio, or drop files at t
 same paths. The phone number, email and address in `src/content.ts` are sample
 values, and the venue names are illustrative.
 
-## Sharing it
+## Deploying
+
+The same Hono API runs on two hosts through the `Store` contract in
+`src/server/store.ts`.
+
+### Cloudflare (original target)
 
 `npm run build` writes `dist/client` (assets) and `dist/yugan_photography`
-(Worker). `deploy.json` describes both for the Sites uploader. Before publishing
-for real, provision a D1 database and an R2 bucket and put their ids in
-`wrangler.jsonc`, then move `ADMIN_PASSCODE` and `SESSION_SECRET` into secrets.
+(Worker). `deploy.json` describes both for the Sites uploader. Provision a D1
+database and an R2 bucket, put their ids in `wrangler.jsonc`, then move
+`ADMIN_PASSCODE` and `SESSION_SECRET` into secrets.
+
+### Vercel
+
+`api/[[...route]].js` is generated at build time by `scripts/build-api.mjs`
+(the Hono app is bundled with esbuild), and the SPA is built with
+`vite.vercel.config.ts`. Content, enquiry briefs and uploaded photographs live
+in a **private Vercel Blob store**; images are streamed back through `/media/*`
+so URLs stay the same on both hosts.
+
+```sh
+vercel link                       # link this directory to the project
+vercel storage create yugan-media --type blob --access private
+vercel storage connect yugan-media --auth token --add-rw-token --yes
+vercel env add ADMIN_PASSCODE      # production, preview, development
+vercel env add SESSION_SECRET
+vercel deploy --target preview
+```
+
+Required environment variables: `BLOB_READ_WRITE_TOKEN` (from the connected
+store), `ADMIN_PASSCODE`, and `SESSION_SECRET`. Studio uploads go from the
+browser straight to Blob, so camera-sized files are not limited by the 4.5 MB
+function body cap. `GET /api/health` reports which store is in use
+(`r2` or `blob`).
+
