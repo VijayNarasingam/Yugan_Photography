@@ -1,0 +1,9 @@
+# Local Cloudflare Worker values for `npm run dev`.
+# Copy this file to `.dev.vars` (which is gitignored) and fill in your own.
+ADMIN_PASSCODE="choose-a-long-studio-passcode"
+SESSION_SECRET="generate-with-openssl-rand-base64-32"
+
+# Optional: replace ADMIN_PASSCODE with its PBKDF2 hash so the plain passcode
+# is not even in the environment. Generate one with:
+#   npm run hash-passcode -- "choose-a-long-studio-passcode"
+# ADMIN_PASSCODE_HASH="pbkdf2-sha256$150000$..."

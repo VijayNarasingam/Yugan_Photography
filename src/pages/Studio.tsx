@@ -3,12 +3,12 @@ import { Link } from 'react-router'
 
 import { AdminButton, Container, Label, Spinner } from '../components/ui'
 import { CATEGORIES, defaultSite, type Project, type Site } from '../content'
-import { api, ApiError, type Message } from '../lib/api'
+import { api, ApiError, type Message, type PasscodeState } from '../lib/api'
 import { cx } from '../lib/cx'
 import { useSite } from '../lib/site'
 import { useTitle } from '../lib/title'
 
-type Tab = 'hero' | 'gallery' | 'about' | 'contact' | 'inbox'
+type Tab = 'hero' | 'gallery' | 'about' | 'contact' | 'inbox' | 'access'
 
 const tabs: { key: Tab; label: string; note: string }[] = [
   { key: 'hero', label: 'Hero', note: 'Banner image and opening words' },
@@ -16,6 +16,7 @@ const tabs: { key: Tab; label: string; note: string }[] = [
   { key: 'about', label: 'About', note: 'Biography, portrait, facts' },
   { key: 'contact', label: 'Contact', note: 'Email, phone, studio details' },
   { key: 'inbox', label: 'Inbox', note: 'Briefs sent from the site' },
+  { key: 'access', label: 'Access', note: 'Studio passcode and sign-in' },
 ]
 
 const inputClass =
@@ -155,7 +156,7 @@ function Gate() {
       </form>
 
       <p className="mx-auto max-w-md font-mono text-[9px] uppercase leading-relaxed tracking-[0.16em] text-night-muted">
-        Session lasts seven days. The passcode lives in wrangler.jsonc for local work — change it there before publishing.
+        Session lasts seven days. The passcode is stored as a hash — change it from the Access tab after signing in.
       </p>
     </div>
   )
@@ -172,6 +173,13 @@ export function Studio() {
   const [message, setMessage] = useState('')
   const [editing, setEditing] = useState<string | null>(null)
   const [inbox, setInbox] = useState<Message[] | null>(null)
+  const [passcodeState, setPasscodeState] = useState<PasscodeState | null>(null)
+  const [currentPasscode, setCurrentPasscode] = useState('')
+  const [nextPasscode, setNextPasscode] = useState('')
+  const [confirmPasscode, setConfirmPasscode] = useState('')
+  const [passcodeBusy, setPasscodeBusy] = useState(false)
+  const [passcodeError, setPasscodeError] = useState('')
+  const [passcodeNote, setPasscodeNote] = useState('')
 
   useEffect(() => {
     setDraft(site)
@@ -184,6 +192,23 @@ export function Studio() {
       .messages()
       .then((r) => live && setInbox(r.messages))
       .catch(() => live && setInbox([]))
+    return () => {
+      live = false
+    }
+  }, [tab, admin])
+
+  useEffect(() => {
+    if (tab !== 'access' || !admin) return
+    let live = true
+    setPasscodeError('')
+    api
+      .passcodeStatus()
+      .then((state) => {
+        if (live) setPasscodeState(state)
+      })
+      .catch(() => {
+        if (live) setPasscodeError('Could not read the passcode status.')
+      })
     return () => {
       live = false
     }
@@ -228,6 +253,54 @@ export function Studio() {
     } catch {
       setMessage('Could not restore defaults.')
       setStatus('error')
+    }
+  }
+
+  const submitPasscode = async (event: React.FormEvent) => {
+    event.preventDefault()
+    setPasscodeError('')
+    setPasscodeNote('')
+    if (nextPasscode.length < 8) {
+      setPasscodeError('Use at least 8 characters for the new passcode.')
+      return
+    }
+    if (nextPasscode !== confirmPasscode) {
+      setPasscodeError('The two new passcodes do not match.')
+      return
+    }
+    setPasscodeBusy(true)
+    try {
+      const state = await api.changePasscode(currentPasscode, nextPasscode)
+      setPasscodeState(state)
+      setCurrentPasscode('')
+      setNextPasscode('')
+      setConfirmPasscode('')
+      setPasscodeNote('Passcode updated. Use the new one next time you sign in.')
+    } catch (err) {
+      setPasscodeError(err instanceof ApiError ? err.message : 'Could not update the passcode.')
+    } finally {
+      setPasscodeBusy(false)
+    }
+  }
+
+  const removePasscode = async () => {
+    if (!window.confirm('Remove the saved passcode and go back to the environment passcode?')) return
+    setPasscodeBusy(true)
+    setPasscodeError('')
+    setPasscodeNote('')
+    try {
+      const state = await api.resetPasscode(currentPasscode)
+      setPasscodeState(state)
+      setCurrentPasscode('')
+      setPasscodeNote(
+        state.source === 'none'
+          ? 'Custom passcode removed. No environment fallback is configured, so sign-in is now disabled.'
+          : 'Custom passcode removed. The environment passcode is active again.',
+      )
+    } catch (err) {
+      setPasscodeError(err instanceof ApiError ? err.message : 'Could not remove the passcode.')
+    } finally {
+      setPasscodeBusy(false)
     }
   }
 
@@ -705,6 +778,113 @@ export function Studio() {
               ))}
             </div>
           </section>
+        )}
+
+        {tab === 'access' && (
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            <section className="border border-line bg-paper p-5 lg:col-span-5">
+              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted">Current access</p>
+              {passcodeState === null && !passcodeError && <p className="mt-4 text-[14px] text-muted">Checking…</p>}
+              {passcodeState && (
+                <>
+                  <p className="mt-4 font-serif text-[24px] leading-tight text-ink">
+                    {passcodeState.source === 'custom' && 'Saved in the studio'}
+                    {passcodeState.source === 'env-hash' && 'Hashed environment passcode'}
+                    {passcodeState.source === 'env' && 'Environment passcode'}
+                    {passcodeState.source === 'none' && 'No passcode configured'}
+                  </p>
+                  <p className="mt-3 text-[13.5px] leading-relaxed text-muted">
+                    {passcodeState.source === 'custom' &&
+                      'The passcode you set here is active. It is stored as a salted PBKDF2 hash in the private settings record, never in the public site JSON.'}
+                    {passcodeState.source === 'env-hash' &&
+                      'ADMIN_PASSCODE_HASH is active. Set a new passcode below to move it into the private site database.'}
+                    {passcodeState.source === 'env' &&
+                      'ADMIN_PASSCODE is active. Set a new passcode below to stop relying on the plain environment value.'}
+                    {passcodeState.source === 'none' &&
+                      'No saved passcode, ADMIN_PASSCODE or ADMIN_PASSCODE_HASH exists. Sign-in is disabled until one is configured.'}
+                  </p>
+                  <dl className="mt-5 grid grid-cols-[auto_1fr] items-baseline gap-x-4 gap-y-2 border-t border-line pt-4 font-mono text-[9.5px] uppercase tracking-[0.12em]">
+                    <dt className="text-faint">Hashing</dt>
+                    <dd className="text-ink-2">PBKDF2 · SHA-256 · 150,000 rounds</dd>
+                    <dt className="text-faint">Stored in</dt>
+                    <dd className="text-ink-2">
+                      {passcodeState.source === 'custom' ? 'Private site database' : 'Environment variable'}
+                    </dd>
+                  </dl>
+                </>
+              )}
+              {passcodeError && (
+                <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-danger">{passcodeError}</p>
+              )}
+            </section>
+
+            <section className="border border-line bg-paper p-5 lg:col-span-7">
+              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted">Change the passcode</p>
+              <form onSubmit={submitPasscode} className="mt-4 space-y-4">
+                <AdminField label="Current passcode">
+                  <input
+                    type="password"
+                    value={currentPasscode}
+                    onChange={(e) => setCurrentPasscode(e.target.value)}
+                    autoComplete="current-password"
+                    maxLength={120}
+                    className={inputClass}
+                    placeholder="••••••••"
+                  />
+                </AdminField>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <AdminField label="New passcode" hint="8+ characters">
+                    <input
+                      type="password"
+                      value={nextPasscode}
+                      onChange={(e) => setNextPasscode(e.target.value)}
+                      autoComplete="new-password"
+                      maxLength={120}
+                      className={inputClass}
+                      placeholder="••••••••"
+                    />
+                  </AdminField>
+                  <AdminField label="Confirm new passcode">
+                    <input
+                      type="password"
+                      value={confirmPasscode}
+                      onChange={(e) => setConfirmPasscode(e.target.value)}
+                      autoComplete="new-password"
+                      maxLength={120}
+                      className={inputClass}
+                      placeholder="••••••••"
+                    />
+                  </AdminField>
+                </div>
+                {passcodeNote && (
+                  <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-success">{passcodeNote}</p>
+                )}
+                <div className="flex flex-wrap items-center gap-2 border-t border-line pt-4">
+                  <AdminButton
+                    type="submit"
+                    tone="solid"
+                    disabled={passcodeBusy || !currentPasscode || !nextPasscode || !confirmPasscode}
+                  >
+                    {passcodeBusy ? 'Updating…' : 'Update passcode'}
+                  </AdminButton>
+                  {passcodeState?.custom && (
+                    <AdminButton
+                      type="button"
+                      tone="danger"
+                      onClick={removePasscode}
+                      disabled={passcodeBusy || !currentPasscode}
+                    >
+                      Use environment passcode
+                    </AdminButton>
+                  )}
+                </div>
+                <p className="font-mono text-[9px] uppercase leading-relaxed tracking-[0.12em] text-faint">
+                  The passcode is hashed before it is stored; the plain text never reaches the database. Removing it falls
+                  back to ADMIN_PASSCODE_HASH or ADMIN_PASSCODE.
+                </p>
+              </form>
+            </section>
+          </div>
         )}
 
         <p className="mt-10 border-t border-line pt-4 font-mono text-[9px] uppercase leading-relaxed tracking-[0.14em] text-faint">

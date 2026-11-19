@@ -5,7 +5,7 @@ photography in Salem, Tamil Nadu. Built with Vite, React 19, Tailwind v4 and a
 Hono Worker that stores the editable content in D1 and uploaded photographs in R2.
 
 ```sh
-npm install        # or bun install
+npm install        # installs from package-lock.json
 npm run dev        # http://localhost:5363
 npm run typecheck
 npm run build
@@ -25,9 +25,22 @@ npm run build
 
 ## The hidden studio
 
-Open **`/studio`** directly. The local passcode is `yugan2026` (set in
-`wrangler.jsonc` as `ADMIN_PASSCODE`). Change it — and `SESSION_SECRET` — before
-publishing, and keep the passcode in a secret rather than a var on a real host.
+Open **`/studio`** directly. For local work, copy `.dev.vars.example` to
+`.dev.vars` and set `ADMIN_PASSCODE` and `SESSION_SECRET` (the file is
+gitignored). On a deployed host, put both in secrets rather than committing
+them.
+
+The passcode is **editable from the studio**: sign in, open the **Access** tab,
+and set a new one. It is stored as a salted **PBKDF2-SHA256 hash** in the
+private settings record (D1 on Cloudflare, the private Blob store on Vercel),
+never in the public site JSON. The environment value stays as a fallback until
+a passcode is saved; remove the saved one from the same tab to fall back again.
+To avoid keeping a plain passcode in the environment at all, generate a hash
+and set `ADMIN_PASSCODE_HASH` instead:
+
+```sh
+npm run hash-passcode -- "your long passcode"
+```
 
 From the studio you can change:
 
@@ -40,6 +53,7 @@ From the studio you can change:
 - **Contact** — email, phone, WhatsApp, Instagram, address, hours, map link,
   availability note, brand and photographer names.
 - **Inbox** — every enquiry sent from the contact form, with delete.
+- **Access** — change the studio passcode or fall back to the environment one.
 
 Uploads go to R2 (`env.FILES`) and are served from `/media/*`. Saving writes one
 JSON row to D1 (`env.DB`); the public site reads it from `GET /api/site`.
@@ -57,6 +71,8 @@ JSON row to D1 (`env.DB`); the public site reads it from `GET /api/site`.
 | Site data context | `src/lib/site.tsx` |
 | API client | `src/lib/api.ts` |
 | Worker routes, auth, validation | `src/server/app.ts` |
+| Passcode hashing | `src/server/auth.ts`, `scripts/hash-passcode.mjs` |
+| Published-file secret scan | `scripts/check-secrets.mjs` |
 | D1 + R2 adapter | `src/server/cloudflare.ts` |
 | Vercel Blob adapter | `src/server/vercel.ts` |
 | Cloudflare entry | `src/worker/index.ts` |
@@ -68,6 +84,7 @@ JSON row to D1 (`env.DB`); the public site reads it from `GET /api/site`.
 | --- | --- |
 | `GET /api/site` | Public site JSON, seeded from `defaultSite` on first run |
 | `GET /api/auth` · `POST /api/auth` · `POST /api/auth/logout` | HMAC session cookie, 7 days |
+| `GET /api/admin/passcode` · `PUT` · `DELETE` | Read, change or remove the hashed studio passcode |
 | `PUT /api/admin/site` · `POST /api/admin/site/reset` | Auth required |
 | `POST /api/admin/media` | Auth required, image only, 10 MB cap |
 | `GET /media/*` | R2 object with immutable caching |
@@ -90,13 +107,14 @@ The same Hono API runs on two hosts through the `Store` contract in
 
 `npm run build` writes `dist/client` (assets) and `dist/yugan_photography`
 (Worker). `deploy.json` describes both for the Sites uploader. Provision a D1
-database and an R2 bucket, put their ids in `wrangler.jsonc`, then move
-`ADMIN_PASSCODE` and `SESSION_SECRET` into secrets.
+database and an R2 bucket, put their ids in `wrangler.jsonc`, then set
+`ADMIN_PASSCODE` and `SESSION_SECRET` with `wrangler secret put` (local values
+go in `.dev.vars`).
 
 ### Vercel
 
-`api/[[...route]].js` is generated at build time by `scripts/build-api.mjs`
-(the Hono app is bundled with esbuild), and the SPA is built with
+`api/index.js` is generated at build time by `scripts/build-api.mjs` (the Hono
+app is bundled with esbuild), and the SPA is built with
 `vite.vercel.config.ts`. Content, enquiry briefs and uploaded photographs live
 in a **private Vercel Blob store**; images are streamed back through `/media/*`
 so URLs stay the same on both hosts.
@@ -111,8 +129,13 @@ vercel deploy --target preview
 ```
 
 Required environment variables: `BLOB_READ_WRITE_TOKEN` (from the connected
-store), `ADMIN_PASSCODE`, and `SESSION_SECRET`. Studio uploads go from the
-browser straight to Blob, so camera-sized files are not limited by the 4.5 MB
-function body cap. `GET /api/health` reports which store is in use
-(`r2` or `blob`).
+store), `ADMIN_PASSCODE` (or `ADMIN_PASSCODE_HASH`), and `SESSION_SECRET`.
+Studio uploads go from the browser straight to Blob, so camera-sized files are
+not limited by the 4.5 MB function body cap. `GET /api/health` reports which
+store is in use (`r2` or `blob`).
+
+Both build commands finish with `scripts/check-secrets.mjs`, which scans the
+published assets for the actual `ADMIN_PASSCODE`, `SESSION_SECRET` and
+`BLOB_READ_WRITE_TOKEN` values plus common key formats, and fails the build if
+any of them leak into the client bundle.
 

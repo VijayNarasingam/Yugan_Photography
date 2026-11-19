@@ -14,11 +14,8 @@
   "d1_databases": [
     { "binding": "DB", "database_name": "yugan-site", "database_id": "00000000-0000-0000-0000-000000000000" }
   ],
-  "r2_buckets": [{ "binding": "FILES", "bucket_name": "yugan-media" }],
-  // Change both before this goes anywhere public. On Sites, move the passcode
-  // into a secret instead of a var.
-  "vars": {
-    "ADMIN_PASSCODE": "yugan2026",
-    "SESSION_SECRET": "replace-this-session-secret"
-  }
+  "r2_buckets": [{ "binding": "FILES", "bucket_name": "yugan-media" }]
+  // Local values live in `.dev.vars` (copy `.dev.vars.example`). On a real host
+  // use `wrangler secret put ADMIN_PASSCODE` and `wrangler secret put SESSION_SECRET`,
+  // or store only ADMIN_PASSCODE_HASH (from `npm run hash-passcode`).
 }

@@ -42,6 +42,11 @@ export type ContactPayload = {
 
 export type Message = ContactPayload & { id: string; createdAt: string }
 
+export type PasscodeState = {
+  custom: boolean
+  source: 'custom' | 'env-hash' | 'env' | 'none'
+}
+
 export const api = {
   site: () => request<{ site: Site; source: 'db' | 'default' }>('/api/site'),
   session: () => request<{ admin: boolean }>('/api/auth'),
@@ -51,6 +56,11 @@ export const api = {
   resetSite: () => request<{ site: Site }>('/api/admin/site/reset', { method: 'POST' }),
   messages: () => request<{ messages: Message[] }>('/api/admin/messages'),
   deleteMessage: (id: string) => request<{ ok: true }>(`/api/admin/messages/${id}`, { method: 'DELETE' }),
+  passcodeStatus: () => request<PasscodeState>('/api/admin/passcode'),
+  changePasscode: (current: string, next: string) =>
+    request<PasscodeState>('/api/admin/passcode', { ...json({ current, next }), method: 'PUT' }),
+  resetPasscode: (current: string) =>
+    request<PasscodeState>('/api/admin/passcode', { ...json({ current }), method: 'DELETE' }),
   contact: (payload: ContactPayload) =>
     request<{ reference: string }>('/api/contact', json(payload)),
   async upload(file: File): Promise<string> {

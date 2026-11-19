@@ -346,11 +346,67 @@ var services = [
   }
 ];
 
+// src/server/auth.ts
+var enc = new TextEncoder();
+var PASSCODE_ITERATIONS = 15e4;
+var KEY_BYTES = 32;
+var ALGORITHM = "pbkdf2-sha256";
+var MIN_ITERATIONS = 1e4;
+var MAX_ITERATIONS = 2e6;
+var toBase64 = (bytes) => {
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/=+$/, "");
+};
+var fromBase64 = (value) => {
+  const binary = atob(value);
+  const bytes = new Uint8Array(new ArrayBuffer(binary.length));
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+};
+async function derive(passcode, salt, iterations) {
+  const key = await crypto.subtle.importKey("raw", enc.encode(passcode), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations, hash: "SHA-256" }, key, KEY_BYTES * 8);
+  return new Uint8Array(bits);
+}
+function bytesEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i += 1) diff |= a[i] ^ b[i];
+  return diff === 0;
+}
+function isPasscodeHash(value) {
+  return typeof value === "string" && value.startsWith(`${ALGORITHM}$`);
+}
+async function hashPasscode(passcode) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const hash = await derive(passcode, salt, PASSCODE_ITERATIONS);
+  return `${ALGORITHM}$${PASSCODE_ITERATIONS}$${toBase64(salt)}$${toBase64(hash)}`;
+}
+async function verifyPasscode(passcode, stored) {
+  if (!isPasscodeHash(stored)) return false;
+  const [, iterationsRaw, saltRaw, hashRaw] = stored.split("$");
+  const iterations = Number(iterationsRaw);
+  if (!Number.isInteger(iterations) || iterations < MIN_ITERATIONS || iterations > MAX_ITERATIONS) return false;
+  if (!saltRaw || !hashRaw) return false;
+  try {
+    const salt = fromBase64(saltRaw);
+    const expected = fromBase64(hashRaw);
+    if (salt.length < 8 || expected.length !== KEY_BYTES) return false;
+    return bytesEqual(await derive(passcode, salt, iterations), expected);
+  } catch {
+    return false;
+  }
+}
+
 // src/server/app.ts
 var SESSION_COOKIE = "yp_studio";
 var SESSION_DAYS = 7;
+var PASSCODE_KEY = "studio-passcode";
+var MIN_PASSCODE = 8;
+var MAX_PASSCODE = 120;
 var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-var enc = new TextEncoder();
+var enc2 = new TextEncoder();
 var str = (v, max = 400) => typeof v === "string" ? v.trim().slice(0, max) : "";
 var asRecord = (v) => v && typeof v === "object" && !Array.isArray(v) ? v : null;
 var asImage = (v, fallback) => {
@@ -375,11 +431,29 @@ async function writeSite(store, site) {
   await store.putSite(JSON.stringify(site));
 }
 function secretOf(options) {
-  return options.sessionSecret || "yugan-local-session";
+  return options.sessionSecret ?? "";
+}
+async function readPasscode(store, options) {
+  const custom = await store.getSetting(PASSCODE_KEY).catch((error) => {
+    console.error("passcode read failed", error);
+    return null;
+  });
+  if (custom) {
+    if (isPasscodeHash(custom)) return { source: "custom", hash: custom };
+    console.error("stored passcode hash is malformed; falling back to the environment");
+  }
+  if (isPasscodeHash(options.adminPasscodeHash)) return { source: "env-hash", hash: options.adminPasscodeHash };
+  if (options.adminPasscode) return { source: "env", plain: options.adminPasscode };
+  return { source: "none" };
+}
+async function passcodeMatches(passcode, config) {
+  if (config.hash) return verifyPasscode(passcode, config.hash);
+  if (config.plain) return same(passcode, config.plain);
+  return false;
 }
 async function hmac(secret, payload) {
-  const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key, enc.encode(payload)));
+  const key = await crypto.subtle.importKey("raw", enc2.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key, enc2.encode(payload)));
   return btoa(String.fromCharCode(...sig)).replace(/=+$/, "");
 }
 function same(a, b) {
@@ -397,6 +471,7 @@ function readCookie(header, name) {
   return "";
 }
 async function isAdmin(headers, options) {
+  if (!options.sessionSecret) return false;
   const raw = readCookie(headers.get("cookie") ?? void 0, SESSION_COOKIE) || (headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
   const parts = raw.split(".");
   if (parts.length !== 3) return false;
@@ -495,10 +570,16 @@ function createApp(options) {
   });
   app2.get("/api/auth", async (c) => c.json({ admin: await isAdmin(c.req.raw.headers, options) }));
   app2.post("/api/auth", async (c) => {
+    if (!options.sessionSecret) {
+      return c.json({ error: "Studio sessions are not configured yet." }, 503);
+    }
     const body = asRecord(await c.req.json().catch(() => null)) ?? {};
-    const passcode = str(body.passcode, 120);
-    const expected = options.adminPasscode || "yugan2026";
-    if (!same(passcode, expected)) {
+    const passcode = str(body.passcode, MAX_PASSCODE);
+    const config = await readPasscode(store, options);
+    if (config.source === "none") {
+      return c.json({ error: "Studio access is not configured yet." }, 503);
+    }
+    if (!await passcodeMatches(passcode, config)) {
       await new Promise((r) => setTimeout(r, 350));
       return c.json({ error: "That passcode is not right." }, 401);
     }
@@ -515,6 +596,55 @@ function createApp(options) {
     "/api/auth/logout",
     (c) => c.json({ admin: false }, 200, { "set-cookie": `${SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0` })
   );
+  app2.get("/api/admin/passcode", async (c) => {
+    if (!await isAdmin(c.req.raw.headers, options)) return unauthorized(c);
+    const config = await readPasscode(store, options);
+    return c.json({ custom: config.source === "custom", source: config.source }, 200, { "cache-control": "no-store" });
+  });
+  app2.put("/api/admin/passcode", async (c) => {
+    if (!await isAdmin(c.req.raw.headers, options)) return unauthorized(c);
+    const body = asRecord(await c.req.json().catch(() => null));
+    if (!body) return c.json({ error: "Send the passcodes as JSON." }, 400);
+    const current = str(body.current, MAX_PASSCODE);
+    const next = typeof body.next === "string" ? body.next.trim() : "";
+    if (next.length < MIN_PASSCODE) {
+      return c.json({ error: `Use at least ${MIN_PASSCODE} characters for the new passcode.` }, 422);
+    }
+    if (next.length > MAX_PASSCODE) {
+      return c.json({ error: `Keep the new passcode under ${MAX_PASSCODE} characters.` }, 422);
+    }
+    if (next === current) {
+      return c.json({ error: "Choose a passcode that is different from the current one." }, 422);
+    }
+    const config = await readPasscode(store, options);
+    if (config.source === "none") {
+      return c.json({ error: "Studio access is not configured yet." }, 503);
+    }
+    if (!await passcodeMatches(current, config)) {
+      await new Promise((r) => setTimeout(r, 350));
+      return c.json({ error: "The current passcode is not right." }, 401);
+    }
+    await store.putSetting(PASSCODE_KEY, await hashPasscode(next));
+    return c.json({ custom: true, source: "custom" }, 200, { "cache-control": "no-store" });
+  });
+  app2.delete("/api/admin/passcode", async (c) => {
+    if (!await isAdmin(c.req.raw.headers, options)) return unauthorized(c);
+    const body = asRecord(await c.req.json().catch(() => null)) ?? {};
+    const current = str(body.current, MAX_PASSCODE);
+    const config = await readPasscode(store, options);
+    if (config.source === "none") {
+      return c.json({ error: "Studio access is not configured yet." }, 503);
+    }
+    if (config.source === "custom") {
+      if (!await passcodeMatches(current, config)) {
+        await new Promise((r) => setTimeout(r, 350));
+        return c.json({ error: "The current passcode is not right." }, 401);
+      }
+      await store.deleteSetting(PASSCODE_KEY);
+    }
+    const after = await readPasscode(store, options);
+    return c.json({ custom: after.source === "custom", source: after.source }, 200, { "cache-control": "no-store" });
+  });
   app2.put("/api/admin/site", async (c) => {
     if (!await isAdmin(c.req.raw.headers, options)) return unauthorized(c);
     const body = await c.req.json().catch(() => null);
@@ -621,6 +751,7 @@ function createApp(options) {
 import { del, get, list, put } from "@vercel/blob";
 import { handleUpload } from "@vercel/blob/client";
 var SITE_KEY = "data/site.json";
+var SETTINGS_KEY = "data/settings.json";
 var MESSAGES_KEY = "data/messages.json";
 var MEDIA_PREFIX = "media/";
 var token = () => process.env.BLOB_READ_WRITE_TOKEN;
@@ -659,6 +790,20 @@ function vercelStore() {
     },
     async putSite(data) {
       await writeJson(SITE_KEY, JSON.parse(data));
+    },
+    async getSetting(key) {
+      const settings = await readJson(SETTINGS_KEY, {});
+      return settings[key] ?? null;
+    },
+    async putSetting(key, value) {
+      const settings = await readJson(SETTINGS_KEY, {});
+      settings[key] = value;
+      await writeJson(SETTINGS_KEY, settings);
+    },
+    async deleteSetting(key) {
+      const settings = await readJson(SETTINGS_KEY, {});
+      delete settings[key];
+      await writeJson(SETTINGS_KEY, settings);
     },
     async addMessage(message) {
       const messages = await readJson(MESSAGES_KEY, []);
@@ -708,6 +853,7 @@ async function generateUploadToken({ request, body }) {
 var app = createApp({
   store: vercelStore(),
   adminPasscode: process.env.ADMIN_PASSCODE,
+  adminPasscodeHash: process.env.ADMIN_PASSCODE_HASH,
   sessionSecret: process.env.SESSION_SECRET,
   generateUploadToken
 });

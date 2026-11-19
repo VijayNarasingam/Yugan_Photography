@@ -11,6 +11,7 @@ async function ensureSchema(db: D1Database) {
   if (schemaReady) return
   await db.batch([
     db.prepare('CREATE TABLE IF NOT EXISTS site (id INTEGER PRIMARY KEY CHECK (id = 1), data TEXT NOT NULL, updated_at TEXT NOT NULL)'),
+    db.prepare('CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL)'),
     db.prepare(
       'CREATE TABLE IF NOT EXISTS messages (id TEXT PRIMARY KEY, created_at TEXT NOT NULL, name TEXT NOT NULL, email TEXT NOT NULL, phone TEXT, project_type TEXT, location TEXT, timeline TEXT, budget TEXT, message TEXT NOT NULL)',
     ),
@@ -33,6 +34,24 @@ export function cloudflareStore(env: CloudflareEnv): Store {
       await env.DB.prepare('INSERT OR REPLACE INTO site (id, data, updated_at) VALUES (1, ?, ?)')
         .bind(data, new Date().toISOString())
         .run()
+    },
+
+    async getSetting(key) {
+      await ensureSchema(env.DB)
+      const row = await env.DB.prepare('SELECT value FROM settings WHERE key = ?').bind(key).first<{ value: string }>()
+      return row?.value ?? null
+    },
+
+    async putSetting(key, value) {
+      await ensureSchema(env.DB)
+      await env.DB.prepare('INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, ?)')
+        .bind(key, value, new Date().toISOString())
+        .run()
+    },
+
+    async deleteSetting(key) {
+      await ensureSchema(env.DB)
+      await env.DB.prepare('DELETE FROM settings WHERE key = ?').bind(key).run()
     },
 
     async addMessage(message: StoredMessage) {

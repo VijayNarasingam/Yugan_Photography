@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 
 import { CATEGORIES, defaultSite, type Project, type Site } from '../content'
+import { hashPasscode, isPasscodeHash, verifyPasscode } from './auth'
 import type { Store, StoredMessage } from './store'
 
 /**
@@ -14,7 +15,10 @@ import type { Store, StoredMessage } from './store'
 
 export type AppOptions = {
   store: Store
+  /** Plain-text fallback used only until a passcode is saved in the studio. */
   adminPasscode?: string
+  /** PBKDF2 hash of the fallback passcode; preferred over `adminPasscode`. */
+  adminPasscodeHash?: string
   sessionSecret?: string
   /** Cloudflare only: serve the built SPA for non-API routes. */
   serveAsset?: (request: Request) => Promise<Response> | Response
@@ -27,6 +31,9 @@ export type AppOptions = {
 
 const SESSION_COOKIE = 'yp_studio'
 const SESSION_DAYS = 7
+const PASSCODE_KEY = 'studio-passcode'
+const MIN_PASSCODE = 8
+const MAX_PASSCODE = 120
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const enc = new TextEncoder()
 
@@ -62,7 +69,38 @@ async function writeSite(store: Store, site: Site) {
 /* ---------------------------------------------------------------- auth --- */
 
 function secretOf(options: AppOptions) {
-  return options.sessionSecret || 'yugan-local-session'
+  return options.sessionSecret ?? ''
+}
+
+type PasscodeConfig = {
+  source: 'custom' | 'env-hash' | 'env' | 'none'
+  hash?: string
+  plain?: string
+}
+
+/**
+ * The studio passcode lives in the private settings record once it has been
+ * changed in the studio. Until then the environment is the fallback: a PBKDF2
+ * hash (`ADMIN_PASSCODE_HASH`) is preferred over a plain `ADMIN_PASSCODE`.
+ */
+async function readPasscode(store: Store, options: AppOptions): Promise<PasscodeConfig> {
+  const custom = await store.getSetting(PASSCODE_KEY).catch((error) => {
+    console.error('passcode read failed', error)
+    return null
+  })
+  if (custom) {
+    if (isPasscodeHash(custom)) return { source: 'custom', hash: custom }
+    console.error('stored passcode hash is malformed; falling back to the environment')
+  }
+  if (isPasscodeHash(options.adminPasscodeHash)) return { source: 'env-hash', hash: options.adminPasscodeHash }
+  if (options.adminPasscode) return { source: 'env', plain: options.adminPasscode }
+  return { source: 'none' }
+}
+
+async function passcodeMatches(passcode: string, config: PasscodeConfig) {
+  if (config.hash) return verifyPasscode(passcode, config.hash)
+  if (config.plain) return same(passcode, config.plain)
+  return false
 }
 
 async function hmac(secret: string, payload: string) {
@@ -88,6 +126,7 @@ function readCookie(header: string | undefined, name: string) {
 }
 
 async function isAdmin(headers: Headers, options: AppOptions) {
+  if (!options.sessionSecret) return false
   const raw = readCookie(headers.get('cookie') ?? undefined, SESSION_COOKIE) || (headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '')
   const parts = raw.split('.')
   if (parts.length !== 3) return false
@@ -222,10 +261,16 @@ export function createApp(options: AppOptions) {
   app.get('/api/auth', async (c) => c.json({ admin: await isAdmin(c.req.raw.headers, options) }))
 
   app.post('/api/auth', async (c) => {
+    if (!options.sessionSecret) {
+      return c.json({ error: 'Studio sessions are not configured yet.' }, 503)
+    }
     const body = asRecord(await c.req.json().catch(() => null)) ?? {}
-    const passcode = str(body.passcode, 120)
-    const expected = options.adminPasscode || 'yugan2026'
-    if (!same(passcode, expected)) {
+    const passcode = str(body.passcode, MAX_PASSCODE)
+    const config = await readPasscode(store, options)
+    if (config.source === 'none') {
+      return c.json({ error: 'Studio access is not configured yet.' }, 503)
+    }
+    if (!(await passcodeMatches(passcode, config))) {
       await new Promise((r) => setTimeout(r, 350))
       return c.json({ error: 'That passcode is not right.' }, 401)
     }
@@ -242,6 +287,63 @@ export function createApp(options: AppOptions) {
   app.post('/api/auth/logout', (c) =>
     c.json({ admin: false }, 200, { 'set-cookie': `${SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0` }),
   )
+
+  app.get('/api/admin/passcode', async (c) => {
+    if (!(await isAdmin(c.req.raw.headers, options))) return unauthorized(c)
+    const config = await readPasscode(store, options)
+    return c.json({ custom: config.source === 'custom', source: config.source }, 200, { 'cache-control': 'no-store' })
+  })
+
+  app.put('/api/admin/passcode', async (c) => {
+    if (!(await isAdmin(c.req.raw.headers, options))) return unauthorized(c)
+    const body = asRecord(await c.req.json().catch(() => null))
+    if (!body) return c.json({ error: 'Send the passcodes as JSON.' }, 400)
+
+    const current = str(body.current, MAX_PASSCODE)
+    const next = typeof body.next === 'string' ? body.next.trim() : ''
+    if (next.length < MIN_PASSCODE) {
+      return c.json({ error: `Use at least ${MIN_PASSCODE} characters for the new passcode.` }, 422)
+    }
+    if (next.length > MAX_PASSCODE) {
+      return c.json({ error: `Keep the new passcode under ${MAX_PASSCODE} characters.` }, 422)
+    }
+    if (next === current) {
+      return c.json({ error: 'Choose a passcode that is different from the current one.' }, 422)
+    }
+
+    const config = await readPasscode(store, options)
+    if (config.source === 'none') {
+      return c.json({ error: 'Studio access is not configured yet.' }, 503)
+    }
+    if (!(await passcodeMatches(current, config))) {
+      await new Promise((r) => setTimeout(r, 350))
+      return c.json({ error: 'The current passcode is not right.' }, 401)
+    }
+
+    await store.putSetting(PASSCODE_KEY, await hashPasscode(next))
+    return c.json({ custom: true, source: 'custom' }, 200, { 'cache-control': 'no-store' })
+  })
+
+  app.delete('/api/admin/passcode', async (c) => {
+    if (!(await isAdmin(c.req.raw.headers, options))) return unauthorized(c)
+    const body = asRecord(await c.req.json().catch(() => null)) ?? {}
+    const current = str(body.current, MAX_PASSCODE)
+    const config = await readPasscode(store, options)
+
+    if (config.source === 'none') {
+      return c.json({ error: 'Studio access is not configured yet.' }, 503)
+    }
+    if (config.source === 'custom') {
+      if (!(await passcodeMatches(current, config))) {
+        await new Promise((r) => setTimeout(r, 350))
+        return c.json({ error: 'The current passcode is not right.' }, 401)
+      }
+      await store.deleteSetting(PASSCODE_KEY)
+    }
+
+    const after = await readPasscode(store, options)
+    return c.json({ custom: after.source === 'custom', source: after.source }, 200, { 'cache-control': 'no-store' })
+  })
 
   app.put('/api/admin/site', async (c) => {
     if (!(await isAdmin(c.req.raw.headers, options))) return unauthorized(c)

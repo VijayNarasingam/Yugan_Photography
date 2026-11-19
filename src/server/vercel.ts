@@ -13,6 +13,7 @@ import type { MediaObject, Store, StoredMessage } from './store'
  */
 
 const SITE_KEY = 'data/site.json'
+const SETTINGS_KEY = 'data/settings.json'
 const MESSAGES_KEY = 'data/messages.json'
 const MEDIA_PREFIX = 'media/'
 
@@ -57,6 +58,23 @@ export function vercelStore(): Store {
 
     async putSite(data) {
       await writeJson(SITE_KEY, JSON.parse(data))
+    },
+
+    async getSetting(key) {
+      const settings = await readJson<Record<string, string>>(SETTINGS_KEY, {})
+      return settings[key] ?? null
+    },
+
+    async putSetting(key, value) {
+      const settings = await readJson<Record<string, string>>(SETTINGS_KEY, {})
+      settings[key] = value
+      await writeJson(SETTINGS_KEY, settings)
+    },
+
+    async deleteSetting(key) {
+      const settings = await readJson<Record<string, string>>(SETTINGS_KEY, {})
+      delete settings[key]
+      await writeJson(SETTINGS_KEY, settings)
     },
 
     async addMessage(message: StoredMessage) {

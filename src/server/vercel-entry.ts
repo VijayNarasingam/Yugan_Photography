@@ -10,6 +10,7 @@ import { generateUploadToken, vercelStore } from './vercel'
 const app = createApp({
   store: vercelStore(),
   adminPasscode: process.env.ADMIN_PASSCODE,
+  adminPasscodeHash: process.env.ADMIN_PASSCODE_HASH,
   sessionSecret: process.env.SESSION_SECRET,
   generateUploadToken,
 })

@@ -8,15 +8,16 @@
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build && node scripts/postbuild.mjs",
-    "build:vercel": "node scripts/build-api.mjs && vite build --config vite.vercel.config.ts",
+    "build": "vite build && node scripts/postbuild.mjs && node scripts/check-secrets.mjs",
+    "build:vercel": "node scripts/build-api.mjs && vite build --config vite.vercel.config.ts && node scripts/check-secrets.mjs",
+    "check-secrets": "node scripts/check-secrets.mjs",
+    "hash-passcode": "node scripts/hash-passcode.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@vercel/blob": "^2.9.0",
     "hono": "^4.13.0",
-    "lucide-react": "^1.60.0",
     "motion": "^14.4.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

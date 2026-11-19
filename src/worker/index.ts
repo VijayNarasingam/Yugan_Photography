@@ -12,6 +12,7 @@ type Env = {
   DB: D1Database
   FILES: R2Bucket
   ADMIN_PASSCODE?: string
+  ADMIN_PASSCODE_HASH?: string
   SESSION_SECRET?: string
 }
 
@@ -20,6 +21,7 @@ export default {
     const app = createApp({
       store: cloudflareStore(env),
       adminPasscode: env.ADMIN_PASSCODE,
+      adminPasscodeHash: env.ADMIN_PASSCODE_HASH,
       sessionSecret: env.SESSION_SECRET,
       serveAsset: (req) => env.ASSETS.fetch(req),
     })

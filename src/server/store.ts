@@ -28,6 +28,10 @@ export interface Store {
   readonly driver: 'r2' | 'blob'
   getSite(): Promise<string | null>
   putSite(data: string): Promise<void>
+  /** Private key/value data that must never appear in GET /api/site. */
+  getSetting(key: string): Promise<string | null>
+  putSetting(key: string, value: string): Promise<void>
+  deleteSetting(key: string): Promise<void>
   addMessage(message: StoredMessage): Promise<void>
   listMessages(): Promise<StoredMessage[]>
   deleteMessage(id: string): Promise<void>
