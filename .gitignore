@@ -10,4 +10,3 @@ dist
 
 .vercel
 .env*
-api/*.js
