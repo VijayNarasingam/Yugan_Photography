@@ -98,12 +98,13 @@ export function SectionHead({
 
 /* --------------------------------------------------------------- controls --- */
 
-type ActionVariant = 'solid' | 'outline' | 'light' | 'bare'
+type ActionVariant = 'solid' | 'outline' | 'light' | 'paper' | 'bare'
 
 const actionClass: Record<ActionVariant, string> = {
   solid: 'bg-ink text-paper hover:bg-brick',
   outline: 'border border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-paper',
   light: 'border border-paper/30 text-paper hover:bg-paper hover:text-ink',
+  paper: 'border border-paper/30 bg-paper text-ink hover:border-brick hover:bg-brick hover:text-paper',
   bare: 'text-ink hover:text-brick',
 }
 

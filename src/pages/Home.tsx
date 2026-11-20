@@ -82,7 +82,7 @@ export function Home() {
                   transition={{ duration: 0.9, delay: 0.72 }}
                   className="flex flex-wrap items-center gap-3"
                 >
-                  <Action to="/work" variant="light" className="bg-paper text-ink hover:bg-brick hover:text-paper" arrow>
+                  <Action to="/work" variant="paper" arrow>
                     See the weddings
                   </Action>
                   <Action to="/contact" variant="light" className="border-paper/40">
